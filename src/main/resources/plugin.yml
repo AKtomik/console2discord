@@ -1,0 +1,6 @@
+name: Console 2 Discord
+version: '${version}'
+
+main: io.itch.aktomik.console2Discord.Console2Discord
+api-version: '1.21.11'
+load: POSTWORLD
