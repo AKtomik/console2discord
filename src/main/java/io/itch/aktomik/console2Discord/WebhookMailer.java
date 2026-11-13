@@ -3,23 +3,35 @@ package io.itch.aktomik.console2Discord;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.logging.Logger;
 
 public class WebhookMailer {
 
     URL url;
+    Logger logger;
 
-    public WebhookMailer(String urlString) {
+    public WebhookMailer(String urlString, Logger pluginLogger) {
+        logger = pluginLogger;
         try {
             url = new URL(urlString);
-        } catch (IOException ignored) {}
+        } catch (IOException e) {
+            logger.throwing("WebhookMailer", "WebhookMailer", e);
+        }
     }
 
-    public void SendMessage(String message) {
+    public int SendMessage(String message) {
         try {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Content-Type", "application/json");
+            con.setDoOutput(true);
+            con.setInstanceFollowRedirects(false);
             con.setRequestMethod("GET");
+            con.setRequestProperty("Content-Type", "text/plain");
+            con.setRequestProperty("charset", "utf-8");
             con.connect();
-        } catch (IOException ignored) {}
+            return con.getResponseCode();// send
+        } catch (IOException e) {
+            logger.throwing("WebhookMailer", "SendMessage", e);
+            return -1;
+        }
     }
 }
