@@ -19,8 +19,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(url, getLogger());
-        mailer.SendMessage("im ignored :(");
-        getLogger().info("sended message");
+        int status = mailer.SendMessage("im i ignored?");
+        getLogger().info((status == -1) ? "fail to send message" : "sent message status=" + status);
     }
 
     @Override

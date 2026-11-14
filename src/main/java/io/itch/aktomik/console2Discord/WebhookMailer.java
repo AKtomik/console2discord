@@ -1,5 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
+import com.google.gson.JsonObject;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -25,13 +27,19 @@ public class WebhookMailer {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
 
+        String json = new JsonBuilder()
+                .add("content", message)
+                .toJson();
+
         try {
 
-            // build
+            // build request
             request = HttpRequest.newBuilder()
-                .uri(uri)
-                .GET()
-                .build();
+                    .uri(uri)
+                    .header("Content-Type", "application/json")
+                    //.header("Accept-Charset", "utf-8")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
 
         } catch (IllegalArgumentException e) {
             String errorMsg = "wrong url: " + uri.getPath();
