@@ -1,38 +1,47 @@
 package io.itch.aktomik.console2Discord;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class WebhookMailer {
 
-    URL url;
+    URI uri;
     Logger logger;
 
     public WebhookMailer(String urlString, Logger pluginLogger) {
         logger = pluginLogger;
-        try {
-            url = new URL(urlString);
-        } catch (IOException e) {
-            logger.log(Level.WARNING, "IOException while sending HTTP request", e);
-        }
+        uri = URI.create(urlString);
     }
 
     public int SendMessage(String message) {
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(uri)
+            .GET()
+            .build();
+
         try {
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setInstanceFollowRedirects(false);
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-            con.setRequestProperty("charset", "utf-8");
-            con.connect();
-            return con.getResponseCode();// send
+
+            // send
+            HttpResponse<String> response = client.send(
+                    request,
+                    HttpResponse.BodyHandlers.ofString()
+            );
+
+            // success
+            return response.statusCode();
+
         } catch (IOException e) {
             logger.log(Level.WARNING, "IOException while sending HTTP request", e);
-            return -1;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
+        return -1;
     }
 }
