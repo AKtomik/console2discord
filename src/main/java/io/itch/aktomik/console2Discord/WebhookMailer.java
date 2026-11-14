@@ -12,6 +12,7 @@ public class WebhookMailer {
 
     URI uri;
     Logger logger;
+    boolean validUri = true;
 
     public WebhookMailer(String urlString, Logger pluginLogger) {
         logger = pluginLogger;
@@ -19,12 +20,25 @@ public class WebhookMailer {
     }
 
     public int SendMessage(String message) {
-        HttpClient client = HttpClient.newHttpClient();
+        if (!validUri) return -1;
 
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(uri)
-            .GET()
-            .build();
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
+
+        try {
+
+            // build
+            request = HttpRequest.newBuilder()
+                .uri(uri)
+                .GET()
+                .build();
+
+        } catch (IllegalArgumentException e) {
+            String errorMsg = "wrong url: " + uri.getPath();
+            logger.log(Level.WARNING, errorMsg);
+            validUri = false;
+            return -1;
+        }
 
         try {
 
@@ -39,9 +53,9 @@ public class WebhookMailer {
 
         } catch (IOException e) {
             logger.log(Level.WARNING, "IOException while sending HTTP request", e);
+            return -1;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return -1;
     }
 }
