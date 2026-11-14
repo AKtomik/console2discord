@@ -5,17 +5,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class WebhookMailer {
 
     URI uri;
-    Logger logger;
     boolean validUri = true;
 
-    public WebhookMailer(String urlString, Logger pluginLogger) {
-        logger = pluginLogger;
+    public WebhookMailer(String urlString) {
         uri = URI.create(urlString);
     }
 
@@ -38,10 +34,8 @@ public class WebhookMailer {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            logger.log(Level.SEVERE, "illegal URL");
-            logger.warning("URL=" + uri.getRawPath());
             validUri = false;
-            return -1;
+            return -2;
         }
 
         try {
@@ -51,8 +45,6 @@ public class WebhookMailer {
             return response.statusCode();
 
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "HTTP request failed");
-            logger.warning("URL=" + uri.getRawPath());
             return -1;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

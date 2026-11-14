@@ -15,9 +15,6 @@ public final class Console2Discord extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // log
-        getLogger().info("Enabled!");
-
         // config
         saveDefaultConfig();
         String webhookUrl = getConfig().getString("webhook-url");
@@ -28,17 +25,16 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // mail
-        mailer = new WebhookMailer(webhookUrl, getLogger());
+        mailer = new WebhookMailer(webhookUrl);
         int status = mailer.sendMessage("hello!");
         if (200 <= status && status < 300) {
             getLogger().info("hello message sent");
-        } else if (status == -1) {
-            getLogger().severe("failure sending message");
-            mailer = null;
-            kill();
-            return;
         } else {
-            getLogger().severe("invalid status code = " + status);
+            String logMessage = "hello message was not sent";
+            if (status == -1) logMessage = "critical failure during web request";
+            else if (status == -2) logMessage = "illegal URL for web request";
+            else if (status > 0) logMessage = "invalid status code after web request\nCODE = " + status;
+            getLogger().severe(logMessage);
             mailer = null;
             kill();
             return;
@@ -57,6 +53,8 @@ public final class Console2Discord extends JavaPlugin {
         loop = new SendLoop(queue, mailer);
         loop.enable();
 
+        // log
+        getLogger().info("Enabled!");
     }
 
     public void kill() {
@@ -73,8 +71,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         if (mailer != null) {
-            int status = mailer.sendMessage("im disabled nooooooo");
-            getLogger().info((status == -1) ? "fail to send message" : "sent message status=" + status);
+            mailer.sendMessage("bye!");
         }
 
         // log
