@@ -1,4 +1,4 @@
-name: Console2Discord
+name: console2discord
 version: '${version}'
 
 main: io.itch.aktomik.console2Discord.Console2Discord
