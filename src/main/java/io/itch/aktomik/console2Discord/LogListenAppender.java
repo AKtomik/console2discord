@@ -17,9 +17,23 @@ public class LogListenAppender extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-        String line = "`" + "[" + LocalTime.now().withNano(0) + " " + event.getLevel() + "]: "
-                + event.getMessage().getFormattedMessage() + "`";
-        queue.offer(line); // can fail and it is ok
+
+        // message
+        String msgStr = event.getMessage().getFormattedMessage();
+
+        // plugin
+        String name = event.getLoggerName();
+        boolean looksLikePlugin = name != null && !name.contains(".");
+        String pluginStr = "";
+        if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
+
+        // time
+        String timeStr = "[" + LocalTime.now().withNano(0) + " " + event.getLevel() + "]: ";
+
+        // timeStr
+        String line = timeStr + pluginStr + msgStr;
+
+        queue.offer("`" + line + "`"); // can fail and it is ok
         // queue.add(line); // can only fail by throw
     }
 }

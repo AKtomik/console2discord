@@ -18,6 +18,9 @@ public final class Console2Discord extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        // cleanup if wrong reload
+        if (mailer != null) shutdown();
+
         // config
         saveDefaultConfig();
         String webhookUrl = getConfig().getString("webhook-url");
@@ -81,9 +84,7 @@ public final class Console2Discord extends JavaPlugin {
     public void onDisable() {
         // if reload
         // else, the shutdown hook handles it
-        if (!Bukkit.isStopping()) {
-            shutdown();
-        }
+        if (!Bukkit.isStopping()) shutdown();
 
         // log
         getLogger().info("Disabled!");
