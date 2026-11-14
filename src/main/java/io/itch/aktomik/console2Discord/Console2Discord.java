@@ -1,6 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
 import org.apache.logging.log4j.LogManager;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
@@ -12,6 +13,8 @@ public final class Console2Discord extends JavaPlugin {
     WebhookMailer mailer = null;
     LogListenAppender appender = null;
     SendLoop loop = null;
+
+    org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
     @Override
     public void onEnable() {
@@ -46,12 +49,12 @@ public final class Console2Discord extends JavaPlugin {
         // appender
         appender = new LogListenAppender(queue);
         appender.start();
-        org.apache.logging.log4j.core.Logger root = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
-        root.addAppender(appender);
+        rootCoreLogger.addAppender(appender);
 
         // loop
         loop = new SendLoop(queue, mailer);
         loop.enable();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> loop.disable(), "Console2Discord-flush"));
 
         // log
         getLogger().info("Enabled!");
@@ -64,8 +67,11 @@ public final class Console2Discord extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // loop
-        if (loop != null) {
+        // if reload
+        // else, the shutdown hook handles it
+        if (!Bukkit.isStopping()) {
+            rootCoreLogger.removeAppender(appender);
+            appender.stop();
             loop.disable();
         }
 
