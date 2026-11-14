@@ -1,5 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -36,19 +38,32 @@ public class SendLoop {
     }
 
     private void loop() {
-        StringBuilder sb = new StringBuilder();
+
+        ArrayList<String> sendingLines = new ArrayList<>();
+        int sendingLetters;
+
         try {
             while (running || !queue.isEmpty()) {
-                String first = queue.poll(2, TimeUnit.SECONDS);
-                if (first == null) continue;
-                sb.setLength(0);
-                sb.append(first);
-                String next;
-                while (sb.length() < 1800 && (next = queue.poll()) != null) {
-                    sb.append('\n').append(next);
+                String firstLine = queue.poll(5, TimeUnit.SECONDS);
+                if (firstLine == null) continue;
+
+                sendingLines.clear();
+                sendingLines.add(firstLine);
+                sendingLetters = firstLine.length();
+
+                String nextLine;
+                while (sendingLetters < 1800 && (nextLine = queue.poll()) != null) {
+                    sendingLines.add(nextLine);
+                    sendingLetters += nextLine.length();
                 }
-                mailer.sendMessage(sb.toString());// waiting response
-                Thread.sleep(1000);
+
+                String message = Settings.enableAnsi
+                        ? AnsiToolbox.makeAnsiBlock(sendingLines)
+                        : AnsiToolbox.makeColorless(sendingLines);
+
+                mailer.sendMessage(message);// waiting response
+                //noinspection BusyWait
+                Thread.sleep(500);
             }
         } catch (InterruptedException ignored) { }
     }

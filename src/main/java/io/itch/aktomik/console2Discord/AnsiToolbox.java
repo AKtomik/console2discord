@@ -1,0 +1,57 @@
+package io.itch.aktomik.console2Discord;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class AnsiToolbox {
+
+    static String charToAnsi(char c) {
+        return switch (Character.toLowerCase(c)) {
+            case '0', '8' -> "30";
+            case '1', '9' -> "34";
+            case '2', 'a' -> "32";
+            case '3', 'b' -> "36";
+            case '4', 'c' -> "31";
+            case '5', 'd' -> "35";
+            case '6', 'e' -> "33";
+            case '7', 'f' -> "37";
+            case 'l' -> "1";
+            case 'n' -> "4";
+            case 'r' -> "0";
+            default -> null;
+        };
+    }
+
+    static String legacyToAnsi(String s) {
+        StringBuilder out = new StringBuilder();
+        boolean colored = false;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (ch == '§' && i + 1 < s.length()) {
+                String code = charToAnsi(s.charAt(++i));
+                if (code != null) {
+                    out.append("\u001b[").append(code).append('m');
+                    colored = !code.equals("0");
+                }
+            } else out.append(ch);
+        }
+        if (colored) out.append("\u001b[0m");
+        return out.toString();
+    }
+
+    public static String makeAnsiBlock(List<String> origin)
+    {
+        String body = origin.stream()
+                .map(AnsiToolbox::legacyToAnsi)
+                .collect(Collectors.joining("\033[0m\n"));
+        return "```ansi" + body + "```";
+    }
+
+    public static String makeColorless(List<String> origin)
+    {
+        return origin.stream()
+                .map(line -> "`" + line + "`")
+                .collect(Collectors.joining("\n"));
+    }
+}
