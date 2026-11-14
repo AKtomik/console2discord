@@ -20,7 +20,7 @@ public class WebhookMailer {
         uri = URI.create(urlString);
     }
 
-    public int SendMessage(String message) {
+    public int sendMessage(String message) {
         if (!validUri) return -1;
 
         HttpClient client = HttpClient.newHttpClient();

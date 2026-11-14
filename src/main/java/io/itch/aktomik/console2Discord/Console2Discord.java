@@ -10,9 +10,11 @@ public final class Console2Discord extends JavaPlugin {
 
     WebhookMailer mailer;
     LogListenAppender appender;
+    SendLoop loop;
 
     @Override
     public void onEnable() {
+        // log
         getLogger().info("enabled!");
 
         // config
@@ -21,6 +23,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // queue
         BlockingQueue<String> queue = new LinkedBlockingQueue<>(10_000);
+        mailer = new WebhookMailer(webhookUrl, getLogger());
 
         // appender
         appender = new LogListenAppender(queue);
@@ -28,14 +31,25 @@ public final class Console2Discord extends JavaPlugin {
         org.apache.logging.log4j.core.Logger root = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
         root.addAppender(appender);
 
+        // loop
+        loop = new SendLoop(queue, mailer);
+        loop.enable();
+
         // mail
-        mailer = new WebhookMailer(webhookUrl, getLogger());
-        int status = mailer.SendMessage("ho im here!!! hiiiiii");
+        int status = mailer.sendMessage("im enabled letzgoooo");
         getLogger().info((status == -1) ? "fail to send message" : "sent message status=" + status);
     }
 
     @Override
     public void onDisable() {
+        // loop
+        loop.disable();
+
+        // mail
+        int status = mailer.sendMessage("im disabled nooooooo");
+        getLogger().info((status == -1) ? "fail to send message" : "sent message status=" + status);
+
+        // log
         getLogger().info("disabled!");
     }
 }
