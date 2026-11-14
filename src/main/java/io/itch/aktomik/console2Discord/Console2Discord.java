@@ -13,6 +13,7 @@ public final class Console2Discord extends JavaPlugin {
     WebhookMailer mailer = null;
     LogListenAppender appender = null;
     SendLoop loop = null;
+    Thread shutdownThread;
 
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
@@ -57,7 +58,8 @@ public final class Console2Discord extends JavaPlugin {
         // loop
         loop = new SendLoop(queue, mailer);
         loop.enable();
-        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Console2Discord-flush"));
+        shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         // log
         getLogger().info("Enabled!");
@@ -84,7 +86,10 @@ public final class Console2Discord extends JavaPlugin {
     public void onDisable() {
         // if reload
         // else, the shutdown hook handles it
-        if (!Bukkit.isStopping()) shutdown();
+        if (!Bukkit.isStopping()) {
+            Runtime.getRuntime().removeShutdownHook(shutdownThread);
+            shutdown();
+        }
 
         // log
         getLogger().info("Disabled!");
