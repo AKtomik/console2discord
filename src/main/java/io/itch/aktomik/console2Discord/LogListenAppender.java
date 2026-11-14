@@ -1,6 +1,25 @@
 package io.itch.aktomik.console2Discord;
 
-//import org.apache.logging.log4j.core.appender;
+import org.apache.logging.log4j.core.LogEvent;
+import org.apache.logging.log4j.core.appender.AbstractAppender;
 
-public class LogListenAppender {
+import java.time.LocalTime;
+import java.util.concurrent.BlockingQueue;
+
+public class LogListenAppender extends AbstractAppender {
+
+    BlockingQueue<String> queue;
+
+    public LogListenAppender(BlockingQueue<String> providedQueue) {
+        super("LogListenAppender", null, null, false);
+        queue = providedQueue;
+    }
+
+    @Override
+    public void append(LogEvent event) {
+        String line = "[" + LocalTime.now().withNano(0) + " " + event.getLevel() + "]: "
+                + event.getMessage().getFormattedMessage();
+        queue.offer(line); // can fail and it is ok
+        // queue.add(line); // can only fail by throw
+    }
 }
