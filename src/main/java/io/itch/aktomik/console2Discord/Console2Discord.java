@@ -54,7 +54,7 @@ public final class Console2Discord extends JavaPlugin {
         // loop
         loop = new SendLoop(queue, mailer);
         loop.enable();
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> loop.disable(), "Console2Discord-flush"));
+        Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown, "Console2Discord-flush"));
 
         // log
         getLogger().info("Enabled!");
@@ -65,19 +65,24 @@ public final class Console2Discord extends JavaPlugin {
         getServer().getPluginManager().disablePlugin(this);
     }
 
+    public void shutdown() {
+        // mail
+        mailer.sendMessage("bye!");
+
+        // appender
+        rootCoreLogger.removeAppender(appender);
+        appender.stop();
+
+        // loop
+        loop.disable();
+    }
+
     @Override
     public void onDisable() {
         // if reload
         // else, the shutdown hook handles it
         if (!Bukkit.isStopping()) {
-            rootCoreLogger.removeAppender(appender);
-            appender.stop();
-            loop.disable();
-        }
-
-        // mail
-        if (mailer != null) {
-            mailer.sendMessage("bye!");
+            shutdown();
         }
 
         // log
