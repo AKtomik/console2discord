@@ -5,7 +5,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +19,7 @@ public class WebhookMailer {
         uri = URI.create(urlString);
     }
 
-    public int SendMessage(String message) {
+    public int sendMessage(String message) {
         if (!validUri) return -1;
 
         HttpClient client = HttpClient.newHttpClient();
@@ -31,38 +30,29 @@ public class WebhookMailer {
                 .toJson();
 
         try {
-
             // build request
             request = HttpRequest.newBuilder()
                     .uri(uri)
                     .header("Content-Type", "application/json")
-                    //.header("Accept-Charset", "utf-8")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
 
         } catch (IllegalArgumentException e) {
-            String uriPath = uri.getPath();
-            String errorMsg = (Objects.equals(uriPath, "YOUR_URL_HERE"))
-                    ? "set your webhook url in config"
-                    : "illegal url: " + uriPath;
-            logger.log(Level.WARNING, errorMsg);
+            logger.log(Level.SEVERE, "illegal URL");
+            logger.warning("URL=" + uri.getRawPath());
             validUri = false;
             return -1;
         }
 
         try {
-
             // send
-            HttpResponse<String> response = client.send(
-                    request,
-                    HttpResponse.BodyHandlers.ofString()
-            );
-
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // success
             return response.statusCode();
 
         } catch (IOException e) {
-            logger.log(Level.WARNING, "IOException while sending HTTP request", e);
+            logger.log(Level.SEVERE, "HTTP request failed");
+            logger.warning("URL=" + uri.getRawPath());
             return -1;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
