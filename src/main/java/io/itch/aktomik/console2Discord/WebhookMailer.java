@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +43,10 @@ public class WebhookMailer {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            String errorMsg = "wrong url: " + uri.getPath();
+            String uriPath = uri.getPath();
+            String errorMsg = (Objects.equals(uriPath, "YOUR_URL_HERE"))
+                    ? "set your webhook url in config"
+                    : "illegal url: " + uriPath;
             logger.log(Level.WARNING, errorMsg);
             validUri = false;
             return -1;
