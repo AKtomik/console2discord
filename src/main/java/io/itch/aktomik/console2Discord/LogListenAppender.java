@@ -23,7 +23,7 @@ public class LogListenAppender extends AbstractAppender {
 
         // plugin
         String name = event.getLoggerName();
-        boolean looksLikePlugin = name != null && !name.contains(".");
+        boolean looksLikePlugin = name != null && !name.isBlank() && !name.contains(".");
         String pluginStr = "";
         if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
 
