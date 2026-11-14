@@ -33,7 +33,7 @@ public final class Console2Discord extends JavaPlugin {
             String logMessage = "hello message was not sent";
             if (status == -1) logMessage = "critical failure during web request";
             else if (status == -2) logMessage = "illegal URL for web request";
-            else if (status > 0) logMessage = "invalid status code after web request\nCODE = " + status;
+            else if (status > 0) logMessage = "invalid status code after web request CODE=" + status;
             getLogger().severe(logMessage);
             mailer = null;
             kill();

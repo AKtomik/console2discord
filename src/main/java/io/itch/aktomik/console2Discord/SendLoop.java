@@ -47,8 +47,7 @@ public class SendLoop {
                 while (sb.length() < 1800 && (next = queue.poll()) != null) {
                     sb.append('\n').append(next);
                 }
-                int status = mailer.sendMessage(sb.toString());// waiting response
-                // status
+                mailer.sendMessage(sb.toString());// waiting response
                 Thread.sleep(1000);
             }
         } catch (InterruptedException ignored) { }
