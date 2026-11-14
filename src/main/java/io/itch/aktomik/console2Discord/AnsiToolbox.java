@@ -45,7 +45,7 @@ public class AnsiToolbox {
         String body = origin.stream()
                 .map(AnsiToolbox::legacyToAnsi)
                 .collect(Collectors.joining("\033[0m\n"));
-        return "```ansi" + body + "```";
+        return "```ansi\n" + body + "\n```";
     }
 
     public static String makeColorless(List<String> origin)
