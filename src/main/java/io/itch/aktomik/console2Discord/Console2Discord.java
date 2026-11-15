@@ -33,7 +33,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
-        int status = mailer.sendEmbed("Console2Discord", "hello!", 10437357);
+        int status = mailer.sendEmbed("Console2Discord", "hello!", 10437357, null);
         if (200 <= status && status < 300) {
             getLogger().info("hello message sent");
         } else {
@@ -81,7 +81,7 @@ public final class Console2Discord extends JavaPlugin {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
-            mailer.sendEmbed("Console2Discord", "bye!" + "\n" + statLine, 10437357);
+            mailer.sendEmbed("Console2Discord", "bye!", 10437357, statLine);
         };
 
         // appender

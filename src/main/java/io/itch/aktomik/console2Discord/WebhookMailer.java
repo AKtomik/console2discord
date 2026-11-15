@@ -1,5 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
+import org.bukkit.Bukkit;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -51,12 +53,12 @@ public class WebhookMailer {
         return sendJson(json);
     }
 
-    public int sendEmbed(String title, String description, int color) {
+    public int sendEmbed(String title, String description, int color, String footer) {
         JsonBuilder embed = new JsonBuilder()
                 .add("title", title)
                 .add("description", description)
-                .add("color", color);
-                //.add("footer", List.of(new JsonBuilder().add("text", footer)));
+                .add("color", color)
+                .add("footer", new JsonBuilder().add("text", footer));
         String json = new JsonBuilder()
                 .add("embeds", List.of(embed))
                 .parse();
