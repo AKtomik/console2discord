@@ -1,2 +1,45 @@
+
+# -------------- put your discord webhook bellow -------------
 webhook-url: YOUR_URL_HERE
-enable-ansi: true
+# -------------------------------------------------------------
+
+message:
+  # group messages if sent the same second
+  group-by-second: true
+  # max number of characters for a message
+  # discord limit is 2000, and a margin is needed for formating
+  char-limit: 1900
+
+content:
+  ansi:
+    # enable ansi format for colors
+    enable: true
+    # do apply a color to warnings logs
+    # only works if ansi is enabled
+    color-warning: true
+    # do apply a color to errors logs
+    # only works if ansi is enabled
+    color-error: true
+
+  stack-trace:
+    # if stack trace is forwarded to discord
+    allow: true
+    # max number of characters for a stack trace before cutting
+    char-limit: 1200
+
+queue:
+  # how much logs can be stored in the queue
+  # if the capacity is full, new messages are ignored
+  wait-capacity: 100
+  # how much try to send a request before skip
+  request-try-amount: 5
+  # various delay times to not reach rate limits
+  # do not change unless you know what you are doing!
+  wait-time:
+    breath-start-ms: 100
+    between-request:
+      min-ms: 100
+      max-ms: 400
+    retry-delay:
+      first-ms: 100
+      incrementation-ms: 400

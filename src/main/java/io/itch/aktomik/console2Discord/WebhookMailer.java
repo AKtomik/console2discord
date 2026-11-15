@@ -1,7 +1,5 @@
 package io.itch.aktomik.console2Discord;
 
-import org.bukkit.Bukkit;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;

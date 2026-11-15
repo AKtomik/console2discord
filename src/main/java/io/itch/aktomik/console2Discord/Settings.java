@@ -5,8 +5,8 @@ public class Settings {
     public static boolean contentAnsiColorWarning = true;
     public static boolean contentAnsiColorError = true;
 
-    public static boolean contentStackAllow = true;
-    public static int contentStackCharLimit = 1200;
+    public static boolean contentStackTraceAllow = true;
+    public static int contentStackTraceCharLimit = 1200;
 
     public static boolean groupOnlySameSecond = true;
     public static int groupBodyCharLimit = 1900;
