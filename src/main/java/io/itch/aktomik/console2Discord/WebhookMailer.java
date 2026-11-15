@@ -5,25 +5,19 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 
 public class WebhookMailer {
 
     URI uri;
-    boolean validUri = true;
 
     public WebhookMailer(String urlString) {
         uri = URI.create(urlString);
     }
 
-    public int sendMessage(String message) {
-        if (!validUri) return -1;
-
+    private int sendJson(String json) {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
-
-        String json = new JsonBuilder()
-                .add("content", message)
-                .toJson();
 
         try {
             // build request
@@ -34,7 +28,6 @@ public class WebhookMailer {
                     .build();
 
         } catch (IllegalArgumentException e) {
-            validUri = false;
             return -2;
         }
 
@@ -49,5 +42,24 @@ public class WebhookMailer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public int sendMessage(String message) {
+        String json = new JsonBuilder()
+                .add("content", message)
+                .parse();
+        return sendJson(json);
+    }
+
+    public int sendEmbed(String title, String description, int color) {
+        JsonBuilder embed = new JsonBuilder()
+                .add("title", title)
+                .add("description", description)
+                .add("color", color);
+                //.add("footer", List.of(new JsonBuilder().add("text", footer)));
+        String json = new JsonBuilder()
+                .add("embeds", List.of(embed))
+                .parse();
+        return sendJson(json);
     }
 }

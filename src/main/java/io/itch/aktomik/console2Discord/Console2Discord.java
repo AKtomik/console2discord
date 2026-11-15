@@ -33,7 +33,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
-        int status = mailer.sendMessage("hello!");
+        int status = mailer.sendEmbed("Console2Discord", "hello!\nbeginning of session", 10437357);
         if (200 <= status && status < 300) {
             getLogger().info("hello message sent");
         } else {
@@ -63,6 +63,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // log
         getLogger().info("Enabled!");
+        // getLogger().severe("Test Error");
+        // getLogger().warning("Test Warning");
     }
 
     public void kill() {
@@ -72,7 +74,7 @@ public final class Console2Discord extends JavaPlugin {
 
     public void shutdown() {
         // mail
-        mailer.sendMessage("bye!");
+        int status = mailer.sendEmbed("Console2Discord", "bye!\nend of session", 10437357);
 
         // appender
         rootCoreLogger.removeAppender(appender);
