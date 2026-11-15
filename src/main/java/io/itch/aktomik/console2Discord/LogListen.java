@@ -36,13 +36,6 @@ public class LogListen extends AbstractAppender {
         // combine
         String line = timeStr + pluginStr + msgStr;
 
-        // enhance
-        if (Settings.enableAnsi) {
-            if (level == Level.ERROR && Settings.coloringError) line = "\033[31m" + line;
-            if (level == Level.WARN && Settings.coloringWarning) line = "\033[33m" + line;
-            // line = line + "\033[0m"; // moved to aggregation
-        }
-
         queue.offer(new LogUnit(line, time, level)); // can fail and it is ok
         // queue.add(line); // can only fail by throw
     }
