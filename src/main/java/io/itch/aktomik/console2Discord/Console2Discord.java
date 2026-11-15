@@ -51,7 +51,9 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
-        int status = mailer.sendEmbed("Console2Discord", "Hello!", 10437357, null);
+        String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
+        String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
+        int status = mailer.sendEmbed("Console2Discord", "Hello!", 10437357, startDetails);
         if (200 <= status && status < 300) {
             getLogger().info("Hello message sent");
         } else {
