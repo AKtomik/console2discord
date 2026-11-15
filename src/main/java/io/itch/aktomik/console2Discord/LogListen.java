@@ -42,12 +42,14 @@ public class LogListen extends AbstractAppender {
         Level level = event.getLevel();
         String timeStr = "[" + time.format(TIME_FORMATTER) + " " + level + "]: ";
 
-        Throwable thrown = event.getThrown();
         String stackStr = "";
-        if (thrown != null) {
-            StringWriter sw = new StringWriter();
-            thrown.printStackTrace(new PrintWriter(sw));
-            stackStr = "\n" + sw.toString().stripTrailing();
+        if (Settings.sendStackIfThrow) {
+            Throwable thrown = event.getThrown();
+            if (thrown != null) {
+                StringWriter sw = new StringWriter();
+                thrown.printStackTrace(new PrintWriter(sw));
+                stackStr = "\n" + sw.toString().stripTrailing();
+            }
         }
 
         // combine

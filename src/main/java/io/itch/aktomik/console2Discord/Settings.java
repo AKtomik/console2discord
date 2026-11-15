@@ -8,4 +8,5 @@ public class Settings {
     public static int groupMaxBodyChar = 1900;
     public static int queueCapacity = 1000;
     public static int sendTryCount = 5;
+    public static boolean sendStackIfThrow = false;
 }
