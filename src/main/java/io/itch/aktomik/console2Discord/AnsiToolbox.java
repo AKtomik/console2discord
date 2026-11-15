@@ -8,20 +8,22 @@ import java.util.stream.Collectors;
 public class AnsiToolbox {
 
     static String charToAnsi(char c) {
-        return switch (Character.toLowerCase(c)) {
-            case '0', '8' -> "30";
-            case '1', '9' -> "34";
-            case '2', 'a' -> "32";
-            case '3', 'b' -> "36";
-            case '4', 'c' -> "31";
-            case '5', 'd' -> "35";
-            case '6', 'e' -> "33";
-            case '7', 'f' -> "37";
-            case 'l' -> "1";
-            case 'n' -> "4";
-            case 'r' -> "0";
-            default -> null;
+        String d;
+        switch (Character.toLowerCase(c)) {
+            case '0': case '8': d = "30";
+            case '1': case '9': d = "34";
+            case '2': case 'a': d = "32";
+            case '3': case 'b': d = "36";
+            case '4': case 'c': d = "31";
+            case '5': case 'd': d = "35";
+            case '6': case 'e': d = "33";
+            case '7': case 'f': d = "37";
+            case 'l': d = "1";
+            case 'n': d = "4";
+            case 'r': d = "0";
+            default: d = null;
         };
+        return d;
     }
 
     static String legacyToAnsi(String s) {
