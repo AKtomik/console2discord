@@ -51,25 +51,31 @@ public class SendLoop {
                     if (nextLog == null) continue;
                 }
 
+                int firstSecond = nextLog.time().getSecond();
                 sendingLogs = new ArrayList<>(List.of(nextLog));
                 sendingLetters = nextLog.length();
 
                 while ((nextLog = queue.poll()) != null) {
-                    if (sendingLetters + nextLog.length() > 2000) break;
+                    if (
+                        sendingLetters + nextLog.length() > 2000
+                        || (Settings.groupOnlySameSecond && nextLog.time().getSecond() != firstSecond)
+                    ) break;
                     sendingLogs.add(nextLog);
                     sendingLetters += nextLog.length();
-                    nextLog = null;
+                    nextLog = null;// necessary
                 }
 
                 String message = Settings.enableAnsi
                         ? AnsiToolbox.makeAnsiBlock(sendingLogs)
                         : AnsiToolbox.makeColorless(sendingLogs);
-
-                mailer.sendMessage(message);// waiting response
                 sendingLogs.clear();
 
+                long timeBefore = System.currentTimeMillis();
+                mailer.sendMessage(message);// waiting response
+                long operationDuration = System.currentTimeMillis() - timeBefore;
+
                 //noinspection BusyWait
-                Thread.sleep(500);
+                Thread.sleep(Math.max(100, 500 - operationDuration));
             }
         } catch (InterruptedException ignored) { }
     }
