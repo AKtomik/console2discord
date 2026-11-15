@@ -64,9 +64,14 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // webhook check
-        String webhookUrl = getConfig().getString("webhook-url");
+        String webhookUrl = ConfigSettings.webhookUrl;
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
             getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
+            kill();
+            return;
+        }
+        if (Objects.equals(webhookUrl, "MISSING")) {
+            getLogger().severe("webhook URL is not loaded from plugins/console2discord/config.yml");
             kill();
             return;
         }

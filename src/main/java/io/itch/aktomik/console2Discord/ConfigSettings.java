@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 public final class ConfigSettings {
     private ConfigSettings() {}
 
+    public static String webhookUrl = "MISSING";
+
     public static boolean contentAnsiEnable = true;
     public static boolean contentAnsiColorWarning = true;
     public static boolean contentAnsiColorError = true;
