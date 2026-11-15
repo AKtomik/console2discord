@@ -1,6 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -38,29 +39,35 @@ public class SendLoop {
 
     private void loop() {
 
-        ArrayList<LogUnit> sendingLines = new ArrayList<>();
+        ArrayList<LogUnit> sendingLogs;
         int sendingLetters;
+        LogUnit nextLog = null;
 
         try {
             while (running || !queue.isEmpty()) {
-                LogUnit firstLog = queue.poll(5, TimeUnit.SECONDS);
-                if (firstLog == null) continue;
+                if (nextLog == null)
+                {
+                    nextLog = queue.poll(5, TimeUnit.SECONDS);
+                    if (nextLog == null) continue;
+                }
 
-                sendingLines.clear();
-                sendingLines.add(firstLog);
-                sendingLetters = firstLog.length();
+                sendingLogs = new ArrayList<>(List.of(nextLog));
+                sendingLetters = nextLog.length();
 
-                LogUnit nextLine;
-                while (sendingLetters < 1800 && (nextLine = queue.poll()) != null) {
-                    sendingLines.add(nextLine);
-                    sendingLetters += nextLine.length();
+                while ((nextLog = queue.poll()) != null) {
+                    if (sendingLetters + nextLog.length() > 2000) break;
+                    sendingLogs.add(nextLog);
+                    sendingLetters += nextLog.length();
+                    nextLog = null;
                 }
 
                 String message = Settings.enableAnsi
-                        ? AnsiToolbox.makeAnsiBlock(sendingLines)
-                        : AnsiToolbox.makeColorless(sendingLines);
+                        ? AnsiToolbox.makeAnsiBlock(sendingLogs)
+                        : AnsiToolbox.makeColorless(sendingLogs);
 
                 mailer.sendMessage(message);// waiting response
+                sendingLogs.clear();
+
                 //noinspection BusyWait
                 Thread.sleep(500);
             }
