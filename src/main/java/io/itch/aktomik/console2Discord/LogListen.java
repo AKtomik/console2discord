@@ -43,14 +43,14 @@ public class LogListen extends AbstractAppender {
         String timeStr = "[" + time.format(TIME_FORMATTER) + " " + level + "]: ";
 
         String stackStr = "";
-        if (Settings.contentStackTraceAllow) {
+        if (ConfigSettings.contentStackTraceAllow) {
             Throwable thrown = event.getThrown();
             if (thrown != null) {
                 StringWriter sw = new StringWriter();
                 thrown.printStackTrace(new PrintWriter(sw));
                 stackStr = "\n" + sw.toString().stripTrailing();
-                if (stackStr.length() > Settings.contentStackTraceCharLimit)
-                    stackStr = stackStr.substring(0, Settings.contentStackTraceCharLimit - 3) + "...";
+                if (stackStr.length() > ConfigSettings.contentStackTraceCharLimit)
+                    stackStr = stackStr.substring(0, ConfigSettings.contentStackTraceCharLimit - 3) + "...";
             }
         }
 

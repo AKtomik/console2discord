@@ -56,13 +56,13 @@ public class SendLoop {
                 {
                     nextLog = queue.poll(5, TimeUnit.SECONDS);
                     //noinspection BusyWait
-                    Thread.sleep(Settings.queueWaitTimeResumeMs);
+                    Thread.sleep(ConfigSettings.queueWaitTimeResumeMs);
                     if (nextLog == null) continue;
                 }
 
                 // if one message is already too long
-                if (nextLog.length() > Settings.groupBodyCharLimit)
-                    nextLog = new LogUnit(nextLog.text().substring(0, Settings.groupBodyCharLimit - 3) + "...", nextLog.time(), nextLog.level());
+                if (nextLog.length() > ConfigSettings.messageCharLimit)
+                    nextLog = new LogUnit(nextLog.text().substring(0, ConfigSettings.messageCharLimit - 3) + "...", nextLog.time(), nextLog.level());
 
                 // first setup
                 int firstSecond = nextLog.time().getSecond();// good simplification
@@ -72,8 +72,8 @@ public class SendLoop {
                 // stack log unit in one message
                 while ((nextLog = queue.poll()) != null) {
                     if (
-                        sendingLetters + nextLog.length() > Settings.groupBodyCharLimit
-                        || (Settings.groupOnlySameSecond && nextLog.time().getSecond() != firstSecond)
+                        sendingLetters + nextLog.length() > ConfigSettings.messageCharLimit
+                        || (ConfigSettings.messageGroupBySecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
                     sendingLetters += nextLog.length();
@@ -81,14 +81,14 @@ public class SendLoop {
                 }
 
                 // message send
-                String message = Settings.contentAnsiEnable
+                String message = ConfigSettings.contentAnsiEnable
                         ? AnsiToolbox.makeAnsiBlock(sendingLogs)
                         : AnsiToolbox.makeColorless(sendingLogs);
                 int sendingSize = sendingLogs.size();
                 sendingLogs.clear();
 
                 long timeBefore = System.currentTimeMillis();
-                for (int i = 0; i < Settings.queuePostTryCount; i++)
+                for (int i = 0; i < ConfigSettings.queuePostTryCount; i++)
                 {
                     int status = mailer.sendMessage(message);// waiting response
 
@@ -103,19 +103,19 @@ public class SendLoop {
                     boolean retryable = status == 429 || status < 0 || (status >= 500 && status <= 504);
                     if (!retryable) break;
 
-                    if (i + 1 == Settings.queuePostTryCount)
+                    if (i + 1 == ConfigSettings.queuePostTryCount)
                     {
                         SessionStats.sentFailureCount += sendingSize;
                         break;
                     } else {
                         //noinspection BusyWait
-                        Thread.sleep(Settings.queueWaitTimeRetryFirstMs + (long)Settings.queueWaitTimeRetryIterationMs * i);
+                        Thread.sleep(ConfigSettings.queueWaitTimeRetryFirstMs + (long) ConfigSettings.queueWaitTimeRetryIncrementMs * i);
                     }
                 }
                 long operationDuration = System.currentTimeMillis() - timeBefore;
 
                 //noinspection BusyWait
-                Thread.sleep(Math.max(Settings.queueWaitTimeBetweenMinMs, Settings.queueWaitTimeBetweenMaxMs - operationDuration));
+                Thread.sleep(Math.max(ConfigSettings.queueWaitTimeBetweenMinMs, ConfigSettings.queueWaitTimeBetweenMaxMs - operationDuration));
             }
         } catch (InterruptedException e) {
             throw new RuntimeException("InterruptedException in send loop", e);

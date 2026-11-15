@@ -37,9 +37,7 @@ queue:
   # do not change unless you know what you are doing!
   wait-time:
     breath-start-ms: 100
-    between-request:
-      min-ms: 100
-      max-ms: 400
-    retry-delay:
-      first-ms: 100
-      incrementation-ms: 400
+    between-request-min-ms: 100
+    between-request-max-ms: 400
+    retry-delay-first-ms: 100
+    retry-delay-increment-ms: 400

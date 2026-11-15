@@ -2,8 +2,11 @@ package io.itch.aktomik.console2Discord;
 
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -16,14 +19,28 @@ public final class Console2Discord extends JavaPlugin {
     BlockingQueue<LogUnit> queue;
     Thread shutdownThread;
 
+    boolean killed = false;
+    boolean configResolved = false;
+
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
     @Override
     public void onLoad() {
         super.onLoad();
 
+        // config preload
+        FileConfiguration config;
+        try {
+            saveDefaultConfig();
+            config = getConfig();
+            configResolved = true;
+        } catch(Exception e) {
+            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        }
+        ConfigSettings.load(config);
+
         // queue
-        queue = new LinkedBlockingQueue<>(Settings.queueWaitCapacity);
+        queue = new LinkedBlockingQueue<>(ConfigSettings.queueWaitCapacity);
 
         // appender
         appender = new LogListen(queue);
@@ -40,14 +57,19 @@ public final class Console2Discord extends JavaPlugin {
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // config
-        saveDefaultConfig();
+        if (!configResolved) {
+            saveDefaultConfig();
+            ConfigSettings.load(getConfig());
+            configResolved = true;
+        }
+
+        // webhook check
         String webhookUrl = getConfig().getString("webhook-url");
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
             getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
             kill();
             return;
         }
-        Settings.contentAnsiEnable = getConfig().getBoolean("content.ansi.enable");
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
@@ -78,8 +100,6 @@ public final class Console2Discord extends JavaPlugin {
         // getLogger().severe("Test Error");
         // getLogger().warning("Test Warning");
     }
-
-    boolean killed = false;
 
     public void kill() {
         killed = true;
