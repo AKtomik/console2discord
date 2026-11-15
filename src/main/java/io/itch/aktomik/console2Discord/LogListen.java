@@ -4,10 +4,17 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.BlockingQueue;
 
 public class LogListen extends AbstractAppender {
+
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     BlockingQueue<LogUnit> queue;
 
@@ -18,7 +25,6 @@ public class LogListen extends AbstractAppender {
 
     @Override
     public void append(LogEvent event) {
-
         // message
         String msgStr = event.getMessage().getFormattedMessage();
 
@@ -29,12 +35,23 @@ public class LogListen extends AbstractAppender {
         if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
 
         // time
-        LocalTime time = LocalTime.now().withNano(0);
+        LocalTime time = Instant.ofEpochMilli(event.getTimeMillis())
+                .atZone(ZoneId.systemDefault())
+                .toLocalTime()
+                .withNano(0);
         Level level = event.getLevel();
-        String timeStr = "[" + time + " " + level + "]: ";
+        String timeStr = "[" + time.format(TIME_FORMATTER) + " " + level + "]: ";
+
+        Throwable thrown = event.getThrown();
+        String stackStr = "";
+        if (thrown != null) {
+            StringWriter sw = new StringWriter();
+            thrown.printStackTrace(new PrintWriter(sw));
+            stackStr = "\n" + sw.toString().stripTrailing();
+        }
 
         // combine
-        String line = timeStr + pluginStr + msgStr;
+        String line = timeStr + pluginStr + msgStr + stackStr;
 
         queue.offer(new LogUnit(line, time, level)); // can fail and it is ok
         //queue.add(new LogUnit(line, time, level)); // can only fail by throw
