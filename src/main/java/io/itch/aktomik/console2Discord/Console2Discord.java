@@ -13,9 +13,25 @@ public final class Console2Discord extends JavaPlugin {
     WebhookMailer mailer = null;
     LogListen appender = null;
     SendLoop loop = null;
+    BlockingQueue<LogUnit> queue;
     Thread shutdownThread;
 
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        // queue
+        queue = new LinkedBlockingQueue<>(Settings.queueWaitCapacity);
+
+        // appender
+        appender = new LogListen(queue);
+        appender.start();
+        rootCoreLogger.addAppender(appender);
+
+        getLogger().info("Loaded!");
+    }
 
     @Override
     public void onEnable() {
@@ -26,7 +42,7 @@ public final class Console2Discord extends JavaPlugin {
         saveDefaultConfig();
         String webhookUrl = getConfig().getString("webhook-url");
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
-            getLogger().severe("set your webhook URL in plugins/console2discord/config.yml");
+            getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
             kill();
             return;
         }
@@ -34,27 +50,19 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
-        int status = mailer.sendEmbed("Console2Discord", "hello!", 10437357, null);
+        int status = mailer.sendEmbed("Console2Discord", "Hello!", 10437357, null);
         if (200 <= status && status < 300) {
-            getLogger().info("hello message sent");
+            getLogger().info("Hello message sent");
         } else {
-            String logMessage = "hello message was not sent";
-            if (status == -1) logMessage = "critical failure during web request";
-            else if (status == -2) logMessage = "illegal URL for web request";
-            else if (status > 0) logMessage = "invalid status code after web request CODE=" + status;
+            String logMessage = "Hello message was not sent";
+            if (status == -1) logMessage = "Critical failure during web request";
+            else if (status == -2) logMessage = "Illegal URL for web request";
+            else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
             getLogger().severe(logMessage);
             mailer = null;
             kill();
             return;
         }
-
-        // queue
-        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(Settings.queueWaitCapacity);
-
-        // appender
-        appender = new LogListen(queue);
-        appender.start();
-        rootCoreLogger.addAppender(appender);
 
         // loop
         loop = new SendLoop(queue, mailer);
@@ -72,7 +80,7 @@ public final class Console2Discord extends JavaPlugin {
 
     public void kill() {
         killed = true;
-        getLogger().warning("self disabling...");
+        getLogger().warning("Self disabling...");
         getServer().getPluginManager().disablePlugin(this);
     }
 
@@ -82,7 +90,7 @@ public final class Console2Discord extends JavaPlugin {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
-            mailer.sendEmbed("Console2Discord", "bye!", 10437357, statLine);
+            mailer.sendEmbed("Console2Discord", "Bye!", 10437357, statLine);
         };
 
         // appender
