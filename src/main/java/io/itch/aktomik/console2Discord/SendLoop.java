@@ -13,7 +13,17 @@ public class SendLoop {
     BlockingQueue<LogUnit> queue;
     WebhookMailer mailer;
 
-    Runnable lastWill = null;
+    private Runnable lastWill = null;
+
+    private int sentSuccessCount = 0;
+    private int sentFailureCount = 0;
+
+    public int sentSuccessCount() {
+        return sentSuccessCount;
+    }
+    public int sentFailureCount() {
+        return sentFailureCount;
+    }
 
     SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
@@ -75,10 +85,34 @@ public class SendLoop {
                 String message = Settings.enableAnsi
                         ? AnsiToolbox.makeAnsiBlock(sendingLogs)
                         : AnsiToolbox.makeColorless(sendingLogs);
+                int sendingSize = sendingLogs.size();
                 sendingLogs.clear();
 
                 long timeBefore = System.currentTimeMillis();
-                mailer.sendMessage(message);// waiting response
+                for (int i = 0; i < Settings.sendTryCount; i++)
+                {
+                    int status = mailer.sendMessage(message);// waiting response
+
+                    // fine
+                    if (200 <= status && status < 300)
+                    {
+                        sentSuccessCount += sendingSize;
+                        break;
+                    }
+
+                    // something wrong
+                    boolean retryable = status == 429 || status < 0 || (status >= 500 && status <= 504);
+                    if (!retryable) break;
+
+                    if (i + 1 == Settings.sendTryCount)
+                    {
+                        sentFailureCount += sendingSize;
+                        break;
+                    } else {
+                        //noinspection BusyWait
+                        Thread.sleep(500L + 1000L * i);
+                    }
+                }
                 long operationDuration = System.currentTimeMillis() - timeBefore;
 
                 //noinspection BusyWait

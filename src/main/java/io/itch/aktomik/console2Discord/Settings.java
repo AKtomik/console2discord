@@ -6,4 +6,5 @@ public class Settings {
     public static boolean coloringError = true;
     public static boolean groupOnlySameSecond = true;
     public static int queueCapacity = 1000;
+    public static int sendTryCount = 5;
 }

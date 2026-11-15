@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -78,7 +77,10 @@ public final class Console2Discord extends JavaPlugin {
 
     public void shutdown() {
         // mail
-        Runnable will = () -> mailer.sendEmbed("Console2Discord", "bye!", 10437357);
+        Runnable will = () -> {
+            String statLine = loop.sentSuccessCount() + " logs sent - " + loop.sentFailureCount() + " fail";
+            mailer.sendEmbed("Console2Discord", "bye!" + "\n" + statLine, 10437357);
+        };
 
         // appender
         rootCoreLogger.removeAppender(appender);
