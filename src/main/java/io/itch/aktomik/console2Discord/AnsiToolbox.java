@@ -47,7 +47,7 @@ public class AnsiToolbox {
                 .map(unit -> {
                     String text = unit.text();
                     if (unit.level() == Level.ERROR && Settings.contentAnsiColorError) text = "\033[31m" + text;
-                    if (unit.level() == Level.WARN && Settings.contentAnsiColorWarning) text = "\033[33m" + text;
+                    if (unit.level() == Level.WARN && Settings.contentAnsiColorWarning) text = "\033[93m" + text;
                     return legacyToAnsi(text);
                 })
                 .collect(Collectors.joining("\033[0m\n"));
