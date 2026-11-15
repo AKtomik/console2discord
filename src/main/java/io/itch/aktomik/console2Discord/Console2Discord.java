@@ -30,6 +30,7 @@ public final class Console2Discord extends JavaPlugin {
             kill();
             return;
         }
+        Settings.contentAnsiEnable = getConfig().getBoolean("enable-ansi");
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
