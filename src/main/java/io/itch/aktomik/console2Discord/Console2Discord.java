@@ -10,6 +10,8 @@ import java.io.File;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Consumer;
+import java.util.logging.Level;
 
 public final class Console2Discord extends JavaPlugin {
 
@@ -104,7 +106,22 @@ public final class Console2Discord extends JavaPlugin {
         getLogger().info("Enabled!");
         if (ConfigSettings.debugTestError) getLogger().severe("Test Error");
         if (ConfigSettings.debugTestWarning) getLogger().warning("Test Warning");
-        if (ConfigSettings.debugTestCrash) throw new RuntimeException("Test crash");
+        if (ConfigSettings.debugTestCrash) {
+            try {
+                throw new IllegalStateException("Test Catch Crash", new RuntimeException("Exception Cause"));
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE, "Caught Test Exception", e);
+            }
+//            new Thread(
+//                    () -> getLogger().log(Level.SEVERE, "Test Async Crash", new RuntimeException("Exception Cause"))
+//                    , "Test-Thread"
+//            ).start();
+//            Consumer<Integer> recurse = (Integer n) -> {
+//                if (n == 0) throw new RuntimeException("deep");
+//                recurse.accept(n - 1);
+//            };
+//            try { recurse.accept(60); } catch (Exception e) { getLogger().log(Level.SEVERE, "Deep trace", e); }
+        }
     }
 
     public void kill() {
