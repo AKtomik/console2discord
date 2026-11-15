@@ -1,7 +1,6 @@
 package io.itch.aktomik.console2Discord;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -10,10 +9,10 @@ public class SendLoop {
     private volatile boolean running = false;
     private final Thread worker = new Thread(this::loop, "Console2Discord");
 
-    BlockingQueue<String> queue;
+    BlockingQueue<LogUnit> queue;
     WebhookMailer mailer;
 
-    SendLoop(BlockingQueue<String> providedQueue, WebhookMailer providedMailer) {
+    SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
         mailer = providedMailer;
     }
@@ -39,19 +38,19 @@ public class SendLoop {
 
     private void loop() {
 
-        ArrayList<String> sendingLines = new ArrayList<>();
+        ArrayList<LogUnit> sendingLines = new ArrayList<>();
         int sendingLetters;
 
         try {
             while (running || !queue.isEmpty()) {
-                String firstLine = queue.poll(5, TimeUnit.SECONDS);
-                if (firstLine == null) continue;
+                LogUnit firstLog = queue.poll(5, TimeUnit.SECONDS);
+                if (firstLog == null) continue;
 
                 sendingLines.clear();
-                sendingLines.add(firstLine);
-                sendingLetters = firstLine.length();
+                sendingLines.add(firstLog);
+                sendingLetters = firstLog.length();
 
-                String nextLine;
+                LogUnit nextLine;
                 while (sendingLetters < 1800 && (nextLine = queue.poll()) != null) {
                     sendingLines.add(nextLine);
                     sendingLetters += nextLine.length();

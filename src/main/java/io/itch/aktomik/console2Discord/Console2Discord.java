@@ -11,7 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public final class Console2Discord extends JavaPlugin {
 
     WebhookMailer mailer = null;
-    LogListenAppender appender = null;
+    LogListen appender = null;
     SendLoop loop = null;
     Thread shutdownThread;
 
@@ -48,10 +48,10 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // queue
-        BlockingQueue<String> queue = new LinkedBlockingQueue<>(10_000);
+        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(10_000);
 
         // appender
-        appender = new LogListenAppender(queue);
+        appender = new LogListen(queue);
         appender.start();
         rootCoreLogger.addAppender(appender);
 

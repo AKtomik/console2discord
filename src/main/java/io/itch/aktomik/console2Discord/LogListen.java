@@ -7,12 +7,12 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import java.time.LocalTime;
 import java.util.concurrent.BlockingQueue;
 
-public class LogListenAppender extends AbstractAppender {
+public class LogListen extends AbstractAppender {
 
-    BlockingQueue<String> queue;
+    BlockingQueue<LogUnit> queue;
 
-    public LogListenAppender(BlockingQueue<String> providedQueue) {
-        super("LogListenAppender", null, null, false);
+    public LogListen(BlockingQueue<LogUnit> providedQueue) {
+        super("LogListen", null, null, false);
         queue = providedQueue;
     }
 
@@ -29,19 +29,21 @@ public class LogListenAppender extends AbstractAppender {
         if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
 
         // time
-        String timeStr = "[" + LocalTime.now().withNano(0) + " " + event.getLevel() + "]: ";
+        LocalTime time = LocalTime.now().withNano(0);
+        Level level = event.getLevel();
+        String timeStr = "[" + time + " " + level + "]: ";
 
         // combine
         String line = timeStr + pluginStr + msgStr;
 
         // enhance
         if (Settings.enableAnsi) {
-            if (event.getLevel() == Level.ERROR && Settings.coloringError) line = "\033[31m" + line;
-            if (event.getLevel() == Level.WARN && Settings.coloringWarning) line = "\033[33m" + line;
+            if (level == Level.ERROR && Settings.coloringError) line = "\033[31m" + line;
+            if (level == Level.WARN && Settings.coloringWarning) line = "\033[33m" + line;
             // line = line + "\033[0m"; // moved to aggregation
         }
 
-        queue.offer(line); // can fail and it is ok
+        queue.offer(new LogUnit(line, time, level)); // can fail and it is ok
         // queue.add(line); // can only fail by throw
     }
 }

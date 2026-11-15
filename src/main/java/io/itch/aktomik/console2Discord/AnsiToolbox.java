@@ -40,18 +40,20 @@ public class AnsiToolbox {
         return out.toString();
     }
 
-    public static String makeAnsiBlock(List<String> origin)
+    public static String makeAnsiBlock(List<LogUnit> origin)
     {
         String body = origin.stream()
-                .map(AnsiToolbox::legacyToAnsi)
+                .map(unit -> {
+                    return legacyToAnsi(unit.text());
+                })
                 .collect(Collectors.joining("\033[0m\n"));
         return "```ansi\n" + body + "\n```";
     }
 
-    public static String makeColorless(List<String> origin)
+    public static String makeColorless(List<LogUnit> origin)
     {
         return origin.stream()
-                .map(line -> "`" + line + "`")
+                .map(unit -> "`" + unit.text() + "`")
                 .collect(Collectors.joining("\n"));
     }
 }
