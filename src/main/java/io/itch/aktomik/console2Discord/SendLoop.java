@@ -65,6 +65,8 @@ public class SendLoop {
                 if (nextLog == null)
                 {
                     nextLog = queue.poll(5, TimeUnit.SECONDS);
+                    //noinspection BusyWait
+                    Thread.sleep(Settings.queueWaitTimeResumeMs);
                     if (nextLog == null) continue;
                 }
 
@@ -117,13 +119,13 @@ public class SendLoop {
                         break;
                     } else {
                         //noinspection BusyWait
-                        Thread.sleep(500L + 1000L * i);
+                        Thread.sleep(Settings.queueWaitTimeRetryFirstMs + (long)Settings.queueWaitTimeRetryIterationMs * i);
                     }
                 }
                 long operationDuration = System.currentTimeMillis() - timeBefore;
 
                 //noinspection BusyWait
-                Thread.sleep(Math.max(100, 500 - operationDuration));
+                Thread.sleep(Math.max(Settings.queueWaitTimeBetweenMinMs, Settings.queueWaitTimeBetweenMaxMs - operationDuration));
             }
         } catch (InterruptedException e) {
             throw new RuntimeException("InterruptedException in send loop", e);
