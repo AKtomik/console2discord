@@ -119,7 +119,7 @@ public final class Console2Discord extends JavaPlugin {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
-            mailer.sendEmbed("Console2Discord", ConfigSettings.messageShutdownText, 10437357, statLine);
+            mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
         };
 
         // appender

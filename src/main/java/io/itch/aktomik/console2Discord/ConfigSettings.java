@@ -8,7 +8,7 @@ public final class ConfigSettings {
     public static String webhookUrl = "MISSING";
 
     public static String messageWelcomeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
-    public static String messageShutdownText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
+    public static String messageGoodbyeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
 
     public static boolean contentGroupBySecond = true;
     public static int contentCharLimit = 1900;
@@ -37,7 +37,7 @@ public final class ConfigSettings {
         webhookUrl = c.getString("webhook-url", webhookUrl);
 
         messageWelcomeText = c.getString("message.welcome-text", messageWelcomeText);
-        messageShutdownText = c.getString("message.shutdown-text", messageShutdownText);
+        messageGoodbyeText = c.getString("message.goodbye-text", messageGoodbyeText);
 
         contentAnsiEnable = c.getBoolean("content.ansi.enable", contentAnsiEnable);
         contentAnsiColorWarning = c.getBoolean("content.ansi.color-warning", contentAnsiColorWarning);
