@@ -37,6 +37,7 @@ public final class Console2Discord extends JavaPlugin {
     public void onEnable() {
         // cleanup if wrong reload
         if (mailer != null) shutdown();
+        if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // config
         saveDefaultConfig();
@@ -105,10 +106,10 @@ public final class Console2Discord extends JavaPlugin {
     public void onDisable() {
         // if reload
         // else, the shutdown hook handles it
-        if (!Bukkit.isStopping() && !killed) {
-            if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
-            shutdown();
-        }
+        //if (!Bukkit.isStopping() && !killed) {
+        //    if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
+        //    shutdown();
+        //}
 
         // log
         getLogger().info("Disabled!");

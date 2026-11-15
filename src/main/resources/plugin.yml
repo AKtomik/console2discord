@@ -2,5 +2,5 @@ name: console2discord
 version: '${version}'
 
 main: io.itch.aktomik.console2Discord.Console2Discord
-api-version: '1.21.11'
+api-version: '1.8'
 load: STARTUP
