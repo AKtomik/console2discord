@@ -102,8 +102,9 @@ public final class Console2Discord extends JavaPlugin {
 
         // log
         getLogger().info("Enabled!");
-        // getLogger().severe("Test Error");
-        // getLogger().warning("Test Warning");
+        if (ConfigSettings.debugTestError) getLogger().severe("Test Error");
+        if (ConfigSettings.debugTestWarning) getLogger().warning("Test Warning");
+        if (ConfigSettings.debugTestCrash) throw new RuntimeException("Test crash");
     }
 
     public void kill() {

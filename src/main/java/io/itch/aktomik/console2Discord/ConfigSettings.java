@@ -7,8 +7,8 @@ public final class ConfigSettings {
 
     public static String webhookUrl = "MISSING";
 
-    public static String messageWelcomeText = ":warning: config not correctly loaded, delete console2discord folder and restart";
-    public static String messageShutdownText = ":warning: config not correctly loaded, delete console2discord folder and restart";
+    public static String messageWelcomeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
+    public static String messageShutdownText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
 
     public static boolean contentGroupBySecond = true;
     public static int contentCharLimit = 1900;
@@ -28,6 +28,10 @@ public final class ConfigSettings {
     public static int queueWaitTimeBetweenMaxMs = 400;
     public static int queueWaitTimeRetryFirstMs = 500;
     public static int queueWaitTimeRetryIncrementMs = 1000;
+
+    public static boolean debugTestError = false;
+    public static boolean debugTestWarning = false;
+    public static boolean debugTestCrash = false;
 
     public static void load(FileConfiguration c) {
         webhookUrl = c.getString("webhook-url", webhookUrl);
@@ -53,5 +57,9 @@ public final class ConfigSettings {
         queueWaitTimeBetweenMaxMs = c.getInt("queue.wait-time.between-request-max-ms", queueWaitTimeBetweenMaxMs);
         queueWaitTimeRetryFirstMs = c.getInt("queue.wait-time.retry-delay-first-ms", queueWaitTimeRetryFirstMs);
         queueWaitTimeRetryIncrementMs = c.getInt("queue.wait-time.retry-delay-increment-ms", queueWaitTimeRetryIncrementMs);
+
+        debugTestError = c.getBoolean("debug.test-error", debugTestError);
+        debugTestWarning = c.getBoolean("debug.test-warning", debugTestWarning);
+        debugTestCrash = c.getBoolean("debug.test-crash", debugTestCrash);
     }
 }

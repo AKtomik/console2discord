@@ -46,3 +46,9 @@ queue:
     between-request-max-ms: 400
     retry-delay-first-ms: 100
     retry-delay-increment-ms: 400
+
+debug:
+  # will test by sending to logs after enable
+  test-warning: false
+  test-error: false
+  test-crash: false
