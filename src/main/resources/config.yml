@@ -4,42 +4,56 @@ webhook-url: YOUR_URL_HERE
 # -------------------------------------------------------------
 
 message:
-  # text sent before starting
+
+  # [INFO] text sent before starting
   welcome-text: Hello!
-  # text sent after shutdown
+
+  # [INFO] text sent after shutdown
   goodbye-text: Bye!
 
 content:
-  # group messages if sent the same second
+
+  # [INFO] group messages if sent the same second
   group-by-second: true
-  # max number of characters for full content
-  # discord limit is 2000, and a margin is needed for formating
+
+  # [INFO] max number of characters for full content
+  # [WARN] discord limit is 2000, and a margin is needed for formating
   total-char-limit: 1900
 
   ansi:
-    # enable ansi format for colors
+
+    # [INFO] enable ANSI format for colors
     enable: true
-    # do apply a color to warnings logs
-    # only works if ansi is enabled
+
+    # [INFO] do apply a color to warnings logs
+    # [WARN] only works if ANSI is enabled
     color-warning: true
-    # do apply a color to errors logs
-    # only works if ansi is enabled
+
+    # [INFO] do apply a color to errors logs
+    # [WARN] only works if ANSI is enabled
     color-error: true
 
+
   stack-trace:
-    # if stack trace is forwarded to discord
+
+    # [INFO] if stack trace is forwarded to discord
     allow: true
-    # max number of characters for a stack trace before cutting
+
+    # [INFO] max number of characters for a stack trace before cutting
     char-limit: 1200
 
 queue:
-  # how much logs can be stored in the queue
-  # if the capacity is full, new messages are ignored
+
+  # [INFO] how much logs can be stored in the queue
+  # [WARN] if the capacity is full, new messages are ignored
+  # [WARN] if the capacity is too big, new messages will take time or not arrive
   wait-capacity: 100
-  # how much try to send a request before skip
+
+  # [INFO] how much try to send a request before skip
   request-try-amount: 5
-  # various delay times to not reach rate limits
-  # do not change unless you know what you are doing!
+
+  # [INFO] various delay times to not reach discord rate limits
+  # [ERROR] do not change unless you know what you are doing!
   wait-time:
     breath-start-ms: 100
     between-request-min-ms: 100
@@ -48,7 +62,9 @@ queue:
     retry-delay-increment-ms: 400
 
 debug:
-  # will test by sending to logs after enable
+
+  # [INFO] will test by sending to console after enable
+  # [WARN] this will produce errors/warnings in console
   test-warning: false
   test-error: false
   test-crash: false
