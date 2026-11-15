@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -33,7 +34,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // mail
         mailer = new WebhookMailer(webhookUrl);
-        int status = mailer.sendEmbed("Console2Discord", "hello!\nbeginning of session", 10437357);
+        int status = mailer.sendEmbed("Console2Discord", "hello!", 10437357);
         if (200 <= status && status < 300) {
             getLogger().info("hello message sent");
         } else {
@@ -48,7 +49,7 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // queue
-        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(10_000);
+        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(Settings.queueCapacity);
 
         // appender
         appender = new LogListen(queue);
@@ -67,29 +68,32 @@ public final class Console2Discord extends JavaPlugin {
         // getLogger().warning("Test Warning");
     }
 
+    boolean killed = false;
+
     public void kill() {
+        killed = true;
         getLogger().warning("self disabling...");
         getServer().getPluginManager().disablePlugin(this);
     }
 
     public void shutdown() {
         // mail
-        int status = mailer.sendEmbed("Console2Discord", "bye!\nend of session", 10437357);
+        Runnable will = () -> mailer.sendEmbed("Console2Discord", "bye!", 10437357);
 
         // appender
         rootCoreLogger.removeAppender(appender);
         appender.stop();
 
         // loop
-        loop.disable();
+        loop.disable(will);
     }
 
     @Override
     public void onDisable() {
         // if reload
         // else, the shutdown hook handles it
-        if (!Bukkit.isStopping()) {
-            Runtime.getRuntime().removeShutdownHook(shutdownThread);
+        if (!Bukkit.isStopping() && !killed) {
+            if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
             shutdown();
         }
 

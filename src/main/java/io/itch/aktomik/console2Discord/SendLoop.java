@@ -13,6 +13,8 @@ public class SendLoop {
     BlockingQueue<LogUnit> queue;
     WebhookMailer mailer;
 
+    Runnable lastWill = null;
+
     SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
         mailer = providedMailer;
@@ -37,6 +39,11 @@ public class SendLoop {
         }
     }
 
+    public void disable(Runnable inputWill) {
+        lastWill = inputWill;
+        disable();
+    }
+
     private void loop() {
 
         ArrayList<LogUnit> sendingLogs;
@@ -44,20 +51,20 @@ public class SendLoop {
         LogUnit nextLog = null;
 
         try {
-            while (running || !queue.isEmpty()) {
+            while (running || !queue.isEmpty() || nextLog != null) {
                 if (nextLog == null)
                 {
                     nextLog = queue.poll(5, TimeUnit.SECONDS);
                     if (nextLog == null) continue;
                 }
 
-                int firstSecond = nextLog.time().getSecond();
+                int firstSecond = nextLog.time().getSecond();// impossible to have next minute log
                 sendingLogs = new ArrayList<>(List.of(nextLog));
                 sendingLetters = nextLog.length();
 
                 while ((nextLog = queue.poll()) != null) {
                     if (
-                        sendingLetters + nextLog.length() > 2000
+                        sendingLetters + nextLog.length() > 1900
                         || (Settings.groupOnlySameSecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
@@ -77,6 +84,10 @@ public class SendLoop {
                 //noinspection BusyWait
                 Thread.sleep(Math.max(100, 500 - operationDuration));
             }
-        } catch (InterruptedException ignored) { }
+        } catch (InterruptedException e) {
+            throw new RuntimeException("InterruptedException in send loop", e);
+        }
+
+        if (lastWill != null) lastWill.run();
     }
 }

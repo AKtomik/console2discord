@@ -37,6 +37,6 @@ public class LogListen extends AbstractAppender {
         String line = timeStr + pluginStr + msgStr;
 
         queue.offer(new LogUnit(line, time, level)); // can fail and it is ok
-        // queue.add(line); // can only fail by throw
+        //queue.add(new LogUnit(line, time, level)); // can only fail by throw
     }
 }

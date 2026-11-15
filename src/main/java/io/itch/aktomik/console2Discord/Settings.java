@@ -5,4 +5,5 @@ public class Settings {
     public static boolean coloringWarning = true;
     public static boolean coloringError = true;
     public static boolean groupOnlySameSecond = true;
+    public static int queueCapacity = 1000;
 }
