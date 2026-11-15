@@ -78,7 +78,9 @@ public final class Console2Discord extends JavaPlugin {
     public void shutdown() {
         // mail
         Runnable will = () -> {
-            String statLine = loop.sentSuccessCount() + " logs sent - " + loop.sentFailureCount() + " fail";
+            String statLine = SessionStats.sentSuccessCount + " logs sent"
+                    + " - " + SessionStats.sentFailureCount + " failed"
+                    + " - " + SessionStats.sentIgnoredCount + " ignored";
             mailer.sendEmbed("Console2Discord", "bye!" + "\n" + statLine, 10437357);
         };
 

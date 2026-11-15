@@ -15,16 +15,6 @@ public class SendLoop {
 
     private Runnable lastWill = null;
 
-    private int sentSuccessCount = 0;
-    private int sentFailureCount = 0;
-
-    public int sentSuccessCount() {
-        return sentSuccessCount;
-    }
-    public int sentFailureCount() {
-        return sentFailureCount;
-    }
-
     SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
         mailer = providedMailer;
@@ -105,7 +95,7 @@ public class SendLoop {
                     // fine
                     if (200 <= status && status < 300)
                     {
-                        sentSuccessCount += sendingSize;
+                        SessionStats.sentSuccessCount += sendingSize;
                         break;
                     }
 
@@ -115,7 +105,7 @@ public class SendLoop {
 
                     if (i + 1 == Settings.queuePostTryCount)
                     {
-                        sentFailureCount += sendingSize;
+                        SessionStats.sentFailureCount += sendingSize;
                         break;
                     } else {
                         //noinspection BusyWait
