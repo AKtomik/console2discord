@@ -61,8 +61,8 @@ public class SendLoop {
                 }
 
                 // if one message is already too long
-                if (nextLog.length() > ConfigSettings.messageCharLimit)
-                    nextLog = new LogUnit(nextLog.text().substring(0, ConfigSettings.messageCharLimit - 3) + "...", nextLog.time(), nextLog.level());
+                if (nextLog.length() > ConfigSettings.contentCharLimit)
+                    nextLog = new LogUnit(nextLog.text().substring(0, ConfigSettings.contentCharLimit - 3) + "...", nextLog.time(), nextLog.level());
 
                 // first setup
                 int firstSecond = nextLog.time().getSecond();// good simplification
@@ -72,8 +72,8 @@ public class SendLoop {
                 // stack log unit in one message
                 while ((nextLog = queue.poll()) != null) {
                     if (
-                        sendingLetters + nextLog.length() > ConfigSettings.messageCharLimit
-                        || (ConfigSettings.messageGroupBySecond && nextLog.time().getSecond() != firstSecond)
+                        sendingLetters + nextLog.length() > ConfigSettings.contentCharLimit
+                        || (ConfigSettings.contentGroupBySecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
                     sendingLetters += nextLog.length();

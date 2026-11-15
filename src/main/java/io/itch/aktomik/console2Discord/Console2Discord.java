@@ -80,7 +80,7 @@ public final class Console2Discord extends JavaPlugin {
         mailer = new WebhookMailer(webhookUrl);
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
-        int status = mailer.sendEmbed("Console2Discord", "Hello!", 10437357, startDetails);
+        int status = mailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
         if (200 <= status && status < 300) {
             getLogger().info("Hello message sent");
         } else {
@@ -118,7 +118,7 @@ public final class Console2Discord extends JavaPlugin {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
-            mailer.sendEmbed("Console2Discord", "Bye!", 10437357, statLine);
+            mailer.sendEmbed("Console2Discord", ConfigSettings.messageShutdownText, 10437357, statLine);
         };
 
         // appender

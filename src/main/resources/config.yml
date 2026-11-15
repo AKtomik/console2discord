@@ -4,13 +4,18 @@ webhook-url: YOUR_URL_HERE
 # -------------------------------------------------------------
 
 message:
-  # group messages if sent the same second
-  group-by-second: true
-  # max number of characters for a message
-  # discord limit is 2000, and a margin is needed for formating
-  char-limit: 1900
+  # text sent before starting
+  welcome-text: Hello!
+  # text sent after shutdown
+  goodbye-text: Bye!
 
 content:
+  # group messages if sent the same second
+  group-by-second: true
+  # max number of characters for full content
+  # discord limit is 2000, and a margin is needed for formating
+  total-char-limit: 1900
+
   ansi:
     # enable ansi format for colors
     enable: true
