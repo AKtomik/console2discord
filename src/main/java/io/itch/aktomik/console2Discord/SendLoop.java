@@ -68,13 +68,19 @@ public class SendLoop {
                     if (nextLog == null) continue;
                 }
 
-                int firstSecond = nextLog.time().getSecond();// impossible to have next minute log
+                // if one message is already too long
+                if (nextLog.length() > Settings.groupMaxBodyChar)
+                    nextLog = new LogUnit(nextLog.text().substring(0, Settings.groupMaxBodyChar - 3) + "...", nextLog.time(), nextLog.level());
+
+                // first setup
+                int firstSecond = nextLog.time().getSecond();// good simplification
                 sendingLogs = new ArrayList<>(List.of(nextLog));
                 sendingLetters = nextLog.length();
 
+                // stack log unit in one message
                 while ((nextLog = queue.poll()) != null) {
                     if (
-                        sendingLetters + nextLog.length() > 1900
+                        sendingLetters + nextLog.length() > Settings.groupMaxBodyChar
                         || (Settings.groupOnlySameSecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
@@ -82,6 +88,7 @@ public class SendLoop {
                     nextLog = null;// necessary
                 }
 
+                // message send
                 String message = Settings.enableAnsi
                         ? AnsiToolbox.makeAnsiBlock(sendingLogs)
                         : AnsiToolbox.makeColorless(sendingLogs);
