@@ -71,8 +71,8 @@ public class SendLoop {
                 }
 
                 // if one message is already too long
-                if (nextLog.length() > Settings.groupMaxBodyChar)
-                    nextLog = new LogUnit(nextLog.text().substring(0, Settings.groupMaxBodyChar - 3) + "...", nextLog.time(), nextLog.level());
+                if (nextLog.length() > Settings.groupBodyCharLimit)
+                    nextLog = new LogUnit(nextLog.text().substring(0, Settings.groupBodyCharLimit - 3) + "...", nextLog.time(), nextLog.level());
 
                 // first setup
                 int firstSecond = nextLog.time().getSecond();// good simplification
@@ -82,7 +82,7 @@ public class SendLoop {
                 // stack log unit in one message
                 while ((nextLog = queue.poll()) != null) {
                     if (
-                        sendingLetters + nextLog.length() > Settings.groupMaxBodyChar
+                        sendingLetters + nextLog.length() > Settings.groupBodyCharLimit
                         || (Settings.groupOnlySameSecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
@@ -91,14 +91,14 @@ public class SendLoop {
                 }
 
                 // message send
-                String message = Settings.enableAnsi
+                String message = Settings.contentAnsiEnable
                         ? AnsiToolbox.makeAnsiBlock(sendingLogs)
                         : AnsiToolbox.makeColorless(sendingLogs);
                 int sendingSize = sendingLogs.size();
                 sendingLogs.clear();
 
                 long timeBefore = System.currentTimeMillis();
-                for (int i = 0; i < Settings.sendTryCount; i++)
+                for (int i = 0; i < Settings.queuePostTryCount; i++)
                 {
                     int status = mailer.sendMessage(message);// waiting response
 
@@ -113,7 +113,7 @@ public class SendLoop {
                     boolean retryable = status == 429 || status < 0 || (status >= 500 && status <= 504);
                     if (!retryable) break;
 
-                    if (i + 1 == Settings.sendTryCount)
+                    if (i + 1 == Settings.queuePostTryCount)
                     {
                         sentFailureCount += sendingSize;
                         break;

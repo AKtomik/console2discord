@@ -48,7 +48,7 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // queue
-        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(Settings.queueCapacity);
+        BlockingQueue<LogUnit> queue = new LinkedBlockingQueue<>(Settings.queueWaitCapacity);
 
         // appender
         appender = new LogListen(queue);

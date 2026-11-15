@@ -2,7 +2,6 @@ package io.itch.aktomik.console2Discord;
 
 import org.apache.logging.log4j.Level;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,8 +46,8 @@ public class AnsiToolbox {
         String body = origin.stream()
                 .map(unit -> {
                     String text = unit.text();
-                    if (unit.level() == Level.ERROR && Settings.coloringError) text = "\033[31m" + text;
-                    if (unit.level() == Level.WARN && Settings.coloringWarning) text = "\033[33m" + text;
+                    if (unit.level() == Level.ERROR && Settings.contentAnsiColorError) text = "\033[31m" + text;
+                    if (unit.level() == Level.WARN && Settings.contentAnsiColorWarning) text = "\033[33m" + text;
                     return legacyToAnsi(text);
                 })
                 .collect(Collectors.joining("\033[0m\n"));
