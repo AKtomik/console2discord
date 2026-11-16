@@ -57,7 +57,7 @@ queue:
   # [INFO] how much logs can be stored in the queue
   # [WARN] if the capacity is full, new messages are ignored
   # [WARN] if the capacity is too big, it is not flood proof
-  wait-capacity: 100
+  wait-capacity: 300
 
   # [INFO] group messages if sent the same second
   group-by-second: true

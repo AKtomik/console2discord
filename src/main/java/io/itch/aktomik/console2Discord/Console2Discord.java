@@ -68,7 +68,10 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // start communication
-        if (!startCommunication()) harakiri();
+        if (!startCommunication()) {
+            getLogger().warning("communication failed, is disabled for now");
+            getLogger().warning("you can reload config and retry with [/console2discord reload]");
+        }
 
         // shutdown listen
         shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");

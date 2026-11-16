@@ -49,6 +49,12 @@ public class SendLoop {
         disable();
     }
 
+    public void disableNow() {
+        if (!running) return;
+        running = false;
+        worker.interrupt();
+    }
+
     private void loop() {
 
         ArrayList<LogUnit> sendingLogs;
