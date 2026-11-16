@@ -55,11 +55,16 @@ filter:
 
 queue:
   # [INFO] how much logs can be stored in the queue
-  # [WARN] if the capacity is full, new messages are ignored
-  # [WARN] if the capacity is too big, it is not flood proof
+  # [WARN] if the queue is full, log messages are ignored
   wait-capacity: 300
 
-  # [INFO] group messages if sent the same second
+  # [INFO] will ignore older logs instead of newer when queue is full
+  full-ignore-older: true
+
+  # [INFO] will queue up messages even when disconnected
+  remember-disconnected: true
+
+  # [INFO] group logs only if sent the same second
   group-by-second: true
 
   # [INFO] how much try to send a request before skip

@@ -69,8 +69,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         if (!startCommunication()) {
-            getLogger().warning("communication failed, is disabled for now");
-            getLogger().warning("you can reload config and retry with [/console2discord reload]");
+            getLogger().warning("communication failed, and is disabled for now");
+            getLogger().warning("you can reload config and retry with [/c2d reload]");
         }
 
         // shutdown listen
@@ -156,6 +156,7 @@ public final class Console2Discord extends JavaPlugin {
         // loop
         loop = new SendLoop(queue, mailer);
         loop.enable();
+        getLogger().info("Communication started");
 
         return true;
     }

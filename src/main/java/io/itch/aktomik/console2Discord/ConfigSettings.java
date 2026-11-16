@@ -31,6 +31,8 @@ public final class ConfigSettings {
     public static volatile Set<String> filterAllowedLevels = Collections.emptySet();
 
     public static int queueWaitCapacity = 100;
+    public static boolean queueFullIgnoreOlder = true;
+    public static boolean queueRememberDisconnected = true;
     public static boolean queueGroupBySecond = true;
     public static int queuePostTryCount = 5;
 
@@ -69,7 +71,9 @@ public final class ConfigSettings {
         filterAllowedLevels = Collections.unmodifiableSet(set);
 
         queueWaitCapacity = c.getInt("queue.wait-capacity", queueWaitCapacity);
+        queueRememberDisconnected = c.getBoolean("queue.remember-disconnected", queueRememberDisconnected);
         queueGroupBySecond = c.getBoolean("queue.group-by-second", queueGroupBySecond);
+        queueFullIgnoreOlder = c.getBoolean("queue.full-ignore-older", queueFullIgnoreOlder);
         queuePostTryCount = c.getInt("queue.request-try-count", queuePostTryCount);
 
         queueWaitTimeResumeMs = c.getInt("queue.wait-time.breath-start-ms", queueWaitTimeResumeMs);

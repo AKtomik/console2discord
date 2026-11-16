@@ -86,8 +86,15 @@ public class LogListen extends AbstractAppender {
 
         // combine
         String line = timeStr + pluginStr + msgStr + stackStr;
+        LogUnit unit = new LogUnit(line, time, level);
 
         // send
-        if (!queue.offer(new LogUnit(line, time, level))) SessionStats.sentIgnoredCount += 1;
+        if (ConfigSettings.queueFullIgnoreOlder)
+            while (!queue.offer(unit)) {
+                queue.poll();
+                SessionStats.sentIgnoredCount += 1;
+            }
+        else
+            if (!queue.offer(unit)) SessionStats.sentIgnoredCount += 1;
     }
 }

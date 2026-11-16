@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 public class TheCommand implements CommandExecutor {
 
     Console2Discord plugin;
-    boolean communicationPaused = false;
+    boolean manualStop = false;
 
     public TheCommand(Console2Discord plugin) {
         this.plugin = plugin;
@@ -24,15 +24,19 @@ public class TheCommand implements CommandExecutor {
 
             case "reload":
             {
-                sender.sendMessage("reloading config from memory...");
                 plugin.reloadConfig();
                 ConfigSettings.load(plugin.getConfig());
-                sender.sendMessage("config reloaded");
-                if (!plugin.isCommunicating() && !communicationPaused)
-                    if (plugin.startCommunication())
-                        sender.sendMessage("communication started");
-                    else
-                        sender.sendMessage("communication failed");
+
+                sender.sendMessage("config reloaded from memory");
+                plugin.getLogger().info("config reloaded");
+
+                if (plugin.isCommunicating()) return true;
+                if (plugin.startCommunication()) {
+                    if (ConfigSettings.queueRememberDisconnected && !plugin.isListening()) plugin.startListen();
+                    sender.sendMessage("communication started");
+                } else {
+                    sender.sendMessage("communication failed");
+                }
                 return true;
             }
 
@@ -43,11 +47,14 @@ public class TheCommand implements CommandExecutor {
                     return true;
                 }
 
-                communicationPaused = false;
                 if (plugin.startCommunication())
+                {
+                    if (ConfigSettings.queueRememberDisconnected && !plugin.isListening()) plugin.startListen();
                     sender.sendMessage("communication started");
-                else
+                }
+                else {
                     sender.sendMessage("communication failed");
+                }
                 return true;
             }
 
@@ -59,22 +66,8 @@ public class TheCommand implements CommandExecutor {
                 }
 
                 plugin.stopCommunication();
+                if (ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
                 sender.sendMessage("communication stopped");
-                sender.sendMessage("[/console2discord start] to start again");
-                return true;
-            }
-
-            case "pause":
-            {
-                if (communicationPaused) {
-                    sender.sendMessage("communication is already paused");
-                    sender.sendMessage("[/console2discord start] to start again");
-                    return true;
-                }
-                communicationPaused = true;
-
-                if (plugin.isCommunicating()) plugin.stopCommunication();
-                sender.sendMessage("communication paused");
                 sender.sendMessage("[/console2discord start] to start again");
                 return true;
             }
