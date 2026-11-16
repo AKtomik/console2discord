@@ -69,7 +69,7 @@ public class SendLoop {
                 if (nextLog.length() > ConfigSettings.contentCharLimit)
                 {
                     String truncationMessage = ConfigSettings.messageTruncationText;
-                    String logText = nextLog.text().substring(0, ConfigSettings.contentCharLimit - truncationMessage.length()) + truncationMessage;
+                    String logText = nextLog.text().substring(0, Math.max(0, ConfigSettings.contentCharLimit - truncationMessage.length())) + truncationMessage;
                     nextLog = new LogUnit(logText, nextLog.time(), nextLog.level());
 
                 }

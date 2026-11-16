@@ -1,5 +1,5 @@
 
-# ------------------------------------------------- put your discord webhook bellow --------------------------------------------------
+# --------------------------------------------------- put your discord webhook here --------------------------------------------------
 webhook-url: YOUR_URL_HERE
 # ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -14,12 +14,9 @@ message:
   truncation-text: '...'
 
 content:
-  # [INFO] group messages if sent the same second
-  group-by-second: true
-
-  # [INFO] max number of characters for full content
+  # [INFO] max number of characters for content body
   # [WARN] discord limit is 2000, and a margin is needed for formating
-  total-char-limit: 1900
+  body-char-limit: 1900
 
   # [INFO] change how is formated log on sending
   # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
@@ -53,6 +50,9 @@ queue:
   # [WARN] if the capacity is too big, new messages will take time or not arrive
   wait-capacity: 100
 
+  # [INFO] group messages if sent the same second
+  group-by-second: true
+
   # [INFO] how much try to send a request before skip
   request-try-amount: 5
 
@@ -71,3 +71,6 @@ debug:
   test-warning: false
   test-error: false
   test-crash: false
+
+  # [WARN] this used for config update messages
+  generated-version: ${version}

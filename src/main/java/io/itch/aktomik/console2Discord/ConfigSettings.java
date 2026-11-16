@@ -45,6 +45,7 @@ public final class ConfigSettings {
         messageGoodbyeText = c.getString("message.goodbye-text", messageGoodbyeText);
         messageTruncationText = c.getString("message.truncation-text", messageTruncationText);
 
+        contentCharLimit = c.getInt("content.body-char-limit", contentCharLimit);
         contentFormat = SendFormat.fromString(c.getString("content.format", String.valueOf(contentFormat)));
         if (contentFormat == null) contentFormat = SendFormat.TEXT;
 
@@ -52,14 +53,12 @@ public final class ConfigSettings {
         contentAnsiColorWarning = c.getBoolean("content.ansi.color-warning", contentAnsiColorWarning);
         contentAnsiColorError = c.getBoolean("content.ansi.color-error", contentAnsiColorError);
 
-        contentGroupBySecond = c.getBoolean("message.group-by-second", contentGroupBySecond);
-        contentCharLimit = c.getInt("message.body-char-limit", contentCharLimit);
-
         contentStackTraceAllow = c.getBoolean("content.stack-trace.allow", contentStackTraceAllow);
         contentStackTraceCharLimit = c.getInt("content.stack-trace.char-limit", contentStackTraceCharLimit);
         contentStackTracePrioritizeFirstCause = c.getBoolean("content.stack-trace.prioritize-first-cause", contentStackTracePrioritizeFirstCause);
 
         queueWaitCapacity = c.getInt("queue.wait-capacity", queueWaitCapacity);
+        contentGroupBySecond = c.getBoolean("queue.group-by-second", contentGroupBySecond);
         queuePostTryCount = c.getInt("queue.request-try-count", queuePostTryCount);
 
         queueWaitTimeResumeMs = c.getInt("queue.wait-time.breath-start-ms", queueWaitTimeResumeMs);

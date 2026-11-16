@@ -33,11 +33,11 @@ public class LogListen extends AbstractAppender {
             if (causeIdx > 0) {
                 String head = stack.substring(0, stack.indexOf('\n'));
                 String cause = stack.substring(causeIdx);
-                String separator = "\n\t"+ truncationMessage;
+                String separator = "\n\t" + truncationMessage;
 
                 int room = limit - head.length() - separator.length();
                 if (room > 0) {
-                    if (cause.length() > room) cause = cause.substring(0, room);
+                    if (cause.length() > room) cause = cause.substring(0, room) + truncationMessage;
                     return head + separator + cause;
                 }
             }
