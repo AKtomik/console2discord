@@ -10,6 +10,7 @@ public final class ConfigSettings {
 
     public static String messageWelcomeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
     public static String messageGoodbyeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
+    public static String messageTruncationText = "...";
 
     public static boolean contentGroupBySecond = true;
     public static int contentCharLimit = 1900;
@@ -42,6 +43,7 @@ public final class ConfigSettings {
 
         messageWelcomeText = c.getString("message.welcome-text", messageWelcomeText);
         messageGoodbyeText = c.getString("message.goodbye-text", messageGoodbyeText);
+        messageTruncationText = c.getString("message.truncation-text", messageTruncationText);
 
         contentFormat = SendFormat.fromString(c.getString("content.format", String.valueOf(contentFormat)));
         if (contentFormat == null) contentFormat = SendFormat.TEXT;

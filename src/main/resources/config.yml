@@ -5,10 +5,13 @@ webhook-url: YOUR_URL_HERE
 
 message:
   # [INFO] text sent before starting
-  welcome-text: Hello!
+  welcome-text: 'Hello!'
 
   # [INFO] text sent after shutdown
-  goodbye-text: Bye!
+  goodbye-text: 'Bye!'
+
+  # [INFO] text added to truncated element
+  truncation-text: '...'
 
 content:
   # [INFO] group messages if sent the same second
@@ -18,12 +21,9 @@ content:
   # [WARN] discord limit is 2000, and a margin is needed for formating
   total-char-limit: 1900
 
-  # [INFO] text added after truncation
-  truncation: true
-
   # [INFO] change how is formated log on sending
   # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
-  format: ANSIBLOCK
+  format: 'ANSIBLOCK'
 
   # [WARN] options working only if format is ANSI-BLOCK
   ansi:

@@ -67,7 +67,12 @@ public class SendLoop {
 
                 // if one message is already too long
                 if (nextLog.length() > ConfigSettings.contentCharLimit)
-                    nextLog = new LogUnit(nextLog.text().substring(0, ConfigSettings.contentCharLimit - 3) + "...", nextLog.time(), nextLog.level());
+                {
+                    String truncationMessage = ConfigSettings.messageTruncationText;
+                    String logText = nextLog.text().substring(0, ConfigSettings.contentCharLimit - truncationMessage.length()) + truncationMessage;
+                    nextLog = new LogUnit(logText, nextLog.time(), nextLog.level());
+
+                }
 
                 // first setup
                 int firstSecond = nextLog.time().getSecond();// good simplification

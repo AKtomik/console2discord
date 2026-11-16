@@ -25,7 +25,7 @@ public class LogListen extends AbstractAppender {
         queue = providedQueue;
     }
 
-    private static String truncateStack(String stack, int limit, boolean prioritizeCause) {
+    private static String truncateStack(String stack, int limit, boolean prioritizeCause, String truncationMessage) {
         if (stack.length() <= limit) return stack;
 
         if (prioritizeCause) {
@@ -33,7 +33,7 @@ public class LogListen extends AbstractAppender {
             if (causeIdx > 0) {
                 String head = stack.substring(0, stack.indexOf('\n'));
                 String cause = stack.substring(causeIdx);
-                String separator = "\n\t[...]";
+                String separator = "\n\t"+ truncationMessage;
 
                 int room = limit - head.length() - separator.length();
                 if (room > 0) {
@@ -72,7 +72,12 @@ public class LogListen extends AbstractAppender {
                 StringWriter sw = new StringWriter();
                 thrown.printStackTrace(new PrintWriter(sw));
                 stackStr = "\n" + sw.toString().stripTrailing();
-                stackStr = truncateStack(stackStr, ConfigSettings.contentStackTraceCharLimit, ConfigSettings.contentStackTracePrioritizeFirstCause);
+                stackStr = truncateStack(
+                        stackStr,
+                        ConfigSettings.contentStackTraceCharLimit,
+                        ConfigSettings.contentStackTracePrioritizeFirstCause,
+                        ConfigSettings.messageTruncationText
+                );
             }
         }
 
