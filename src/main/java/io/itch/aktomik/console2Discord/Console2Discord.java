@@ -165,6 +165,7 @@ public final class Console2Discord extends JavaPlugin {
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
             SessionStats.reset();
             mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
+            mailer = null;
         };
         // loop
         loop.disable(will);// will monopolize the thread
