@@ -52,14 +52,14 @@ public final class Console2Discord extends JavaPlugin {
         appender.start();
         rootCoreLogger.addAppender(appender);
 
-        // command
-        this.getCommand("console2discord").setExecutor(new TheCommand(this));
-
         getLogger().info("Loaded!");
     }
 
     @Override
     public void onEnable() {
+        // command
+        this.getCommand("console2discord").setExecutor(new TheCommand(this));
+
         // cleanup if wrong reload
         if (mailer != null) shutdown();
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
