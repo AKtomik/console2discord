@@ -4,7 +4,6 @@ webhook-url: YOUR_URL_HERE
 # -------------------------------------------------------------
 
 message:
-
   # [INFO] text sent before starting
   welcome-text: Hello!
 
@@ -12,7 +11,6 @@ message:
   goodbye-text: Bye!
 
 content:
-
   # [INFO] group messages if sent the same second
   group-by-second: true
 
@@ -20,13 +18,15 @@ content:
   # [WARN] discord limit is 2000, and a margin is needed for formating
   total-char-limit: 1900
 
+  # [INFO] text added after truncation
+  truncation: true
+
   # [INFO] change how is formated log on sending
   # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: ANSIBLOCK
 
   # [WARN] options working only if format is ANSI-BLOCK
   ansi:
-
     # [INFO] convert detected legacy color (using §) to ansi
     convert-legacy: true
 
@@ -38,15 +38,16 @@ content:
 
 
   stack-trace:
-
     # [INFO] if stack trace is forwarded to discord
     allow: true
 
-    # [INFO] max number of characters for a stack trace before cutting
+    # [INFO] max number of characters for a stack trace before truncating it
     char-limit: 1200
 
-queue:
+    # [INFO] if keeping the first cause line is a priority in truncation
+    prioritize-first-cause: true
 
+queue:
   # [INFO] how much logs can be stored in the queue
   # [WARN] if the capacity is full, new messages are ignored
   # [WARN] if the capacity is too big, new messages will take time or not arrive
@@ -65,7 +66,6 @@ queue:
     retry-delay-increment-ms: 400
 
 debug:
-
   # [INFO] will test by sending to console after enable
   # [WARN] this will produce errors/warnings in console
   test-warning: false

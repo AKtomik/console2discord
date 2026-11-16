@@ -22,6 +22,7 @@ public final class ConfigSettings {
 
     public static boolean contentStackTraceAllow = true;
     public static int contentStackTraceCharLimit = 1200;
+    public static boolean contentStackTracePrioritizeFirstCause = true;
 
     public static int queueWaitCapacity = 100;
     public static int queuePostTryCount = 5;
@@ -54,6 +55,7 @@ public final class ConfigSettings {
 
         contentStackTraceAllow = c.getBoolean("content.stack-trace.allow", contentStackTraceAllow);
         contentStackTraceCharLimit = c.getInt("content.stack-trace.char-limit", contentStackTraceCharLimit);
+        contentStackTracePrioritizeFirstCause = c.getBoolean("content.stack-trace.prioritize-first-cause", contentStackTracePrioritizeFirstCause);
 
         queueWaitCapacity = c.getInt("queue.wait-capacity", queueWaitCapacity);
         queuePostTryCount = c.getInt("queue.request-try-count", queuePostTryCount);
