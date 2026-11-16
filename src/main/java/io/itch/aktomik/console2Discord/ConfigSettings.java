@@ -39,6 +39,7 @@ public final class ConfigSettings {
     public static int queueWaitTimeBetweenMaxMs = 400;
     public static int queueWaitTimeRetryFirstMs = 500;
     public static int queueWaitTimeRetryIncrementMs = 1000;
+    public static int queueWaitTimeShutdownWorkerMarginMs = 5000;
 
     public static boolean debugTestError = false;
     public static boolean debugTestWarning = false;
@@ -76,6 +77,7 @@ public final class ConfigSettings {
         queueWaitTimeBetweenMaxMs = c.getInt("queue.wait-time.between-request-max-ms", queueWaitTimeBetweenMaxMs);
         queueWaitTimeRetryFirstMs = c.getInt("queue.wait-time.retry-delay-first-ms", queueWaitTimeRetryFirstMs);
         queueWaitTimeRetryIncrementMs = c.getInt("queue.wait-time.retry-delay-increment-ms", queueWaitTimeRetryIncrementMs);
+        queueWaitTimeShutdownWorkerMarginMs = c.getInt("queue.wait-time.shutdown-worker-margin-ms", queueWaitTimeShutdownWorkerMarginMs);
 
         debugTestError = c.getBoolean("debug.test-error", debugTestError);
         debugTestWarning = c.getBoolean("debug.test-warning", debugTestWarning);

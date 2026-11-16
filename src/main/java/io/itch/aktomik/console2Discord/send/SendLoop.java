@@ -38,7 +38,7 @@ public class SendLoop {
         running = false;
 
         try {
-            worker.join(5000);
+            worker.join(ConfigSettings.queueWaitTimeShutdownWorkerMarginMs);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

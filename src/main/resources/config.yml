@@ -46,7 +46,7 @@ content:
 
 filter:
   # [INFO] only send logs of a certain level
-  # [USE] accepted levels: FATAL, ERROR, WARN, INFO (nothing for no filter)
+  # [USE] accepted levels: FATAL, ERROR, WARN, INFO (keep empty for no filter)
   allowed-levels:
     #- 'FATAL'
     #- 'ERROR'
@@ -56,7 +56,7 @@ filter:
 queue:
   # [INFO] how much logs can be stored in the queue
   # [WARN] if the capacity is full, new messages are ignored
-  # [WARN] if the capacity is too big, new messages will take time or not arrive
+  # [WARN] if the capacity is too big, it is not flood proof
   wait-capacity: 100
 
   # [INFO] group messages if sent the same second
@@ -71,8 +71,9 @@ queue:
     breath-start-ms: 100
     between-request-min-ms: 100
     between-request-max-ms: 400
-    retry-delay-first-ms: 100
-    retry-delay-increment-ms: 400
+    retry-delay-first-ms: 500
+    retry-delay-increment-ms: 1000
+    shutdown-worker-margin-ms: 15000
 
 debug:
   # [INFO] will test by sending to console after enable
