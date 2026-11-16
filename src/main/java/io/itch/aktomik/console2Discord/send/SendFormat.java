@@ -1,9 +1,9 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.send;
 
 public enum SendFormat {
     ANSIBLOCK, CODEBLOCK, INLINE, TEXT;
 
-    static SendFormat fromString(String input)
+    public static SendFormat fromString(String input)
     {
         try {
             return SendFormat.valueOf(input.toUpperCase());

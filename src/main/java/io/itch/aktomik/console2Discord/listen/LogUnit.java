@@ -1,4 +1,4 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.listen;
 
 import org.apache.logging.log4j.Level;
 

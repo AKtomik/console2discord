@@ -1,5 +1,6 @@
 package io.itch.aktomik.console2Discord;
 
+import io.itch.aktomik.console2Discord.send.SendFormat;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public final class ConfigSettings {

@@ -24,8 +24,8 @@ content:
   # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: ANSIBLOCK
 
+  # [WARN] options working only if format is ANSI-BLOCK
   ansi:
-    # [WARN] options working only if format is ANSI-BLOCK
 
     # [INFO] convert detected legacy color (using §) to ansi
     convert-legacy: true

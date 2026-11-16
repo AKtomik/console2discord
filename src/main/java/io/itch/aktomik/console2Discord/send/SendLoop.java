@@ -1,4 +1,9 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.send;
+
+import io.itch.aktomik.console2Discord.ConfigSettings;
+import io.itch.aktomik.console2Discord.listen.LogUnit;
+import io.itch.aktomik.console2Discord.SessionStats;
+import io.itch.aktomik.console2Discord.utils.WebhookMailer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +20,7 @@ public class SendLoop {
 
     private Runnable lastWill = null;
 
-    SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
+    public SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
         mailer = providedMailer;
     }

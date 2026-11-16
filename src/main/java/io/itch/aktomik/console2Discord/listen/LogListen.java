@@ -1,5 +1,7 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.listen;
 
+import io.itch.aktomik.console2Discord.ConfigSettings;
+import io.itch.aktomik.console2Discord.SessionStats;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;

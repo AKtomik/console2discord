@@ -1,5 +1,7 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.send;
 
+import io.itch.aktomik.console2Discord.ConfigSettings;
+import io.itch.aktomik.console2Discord.listen.LogUnit;
 import org.apache.logging.log4j.Level;
 
 import java.util.List;

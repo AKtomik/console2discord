@@ -1,9 +1,9 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.utils;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-class JsonBuilder {
+public class JsonBuilder {
     private final JsonObject json = new JsonObject();
 
     public JsonObject json() {

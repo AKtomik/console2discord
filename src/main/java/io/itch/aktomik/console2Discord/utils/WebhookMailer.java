@@ -1,4 +1,4 @@
-package io.itch.aktomik.console2Discord;
+package io.itch.aktomik.console2Discord.utils;
 
 import java.io.IOException;
 import java.net.URI;
