@@ -4,3 +4,14 @@ version: '${version}'
 main: io.itch.aktomik.console2Discord.Console2Discord
 api-version: '1.13'
 load: STARTUP
+
+commands:
+  console2discord:
+    description: Manage Console2Discord plugin
+    usage: /console2discord reload
+    permission: console2discord.command
+
+permissions:
+  console2discord.command:
+    description: Permission to use Console2Discord command
+    default: op
