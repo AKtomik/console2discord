@@ -1,7 +1,7 @@
 
-# -------------- put your discord webhook bellow -------------
+# ------------------------------------------------- put your discord webhook bellow --------------------------------------------------
 webhook-url: YOUR_URL_HERE
-# -------------------------------------------------------------
+# ------------------------------------------------------------------------------------------------------------------------------------
 
 message:
   # [INFO] text sent before starting
@@ -25,7 +25,7 @@ content:
   # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: 'ANSIBLOCK'
 
-  # [WARN] options working only if format is ANSI-BLOCK
+  # [ERROR] options working only if format is ANSI-BLOCK
   ansi:
     # [INFO] convert detected legacy color (using §) to ansi
     convert-legacy: true
