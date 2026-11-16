@@ -83,7 +83,7 @@ public class SendLoop {
                 while ((nextLog = queue.poll()) != null) {
                     if (
                         sendingLetters + nextLog.length() > ConfigSettings.contentCharLimit
-                        || (ConfigSettings.contentGroupBySecond && nextLog.time().getSecond() != firstSecond)
+                        || (ConfigSettings.queueGroupBySecond && nextLog.time().getSecond() != firstSecond)
                     ) break;
                     sendingLogs.add(nextLog);
                     sendingLetters += nextLog.length();

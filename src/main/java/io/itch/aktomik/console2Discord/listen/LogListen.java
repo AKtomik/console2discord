@@ -57,6 +57,9 @@ public class LogListen extends AbstractAppender {
         String pluginStr = "";
         if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
 
+        // filter
+        if (!ConfigSettings.filterAllowedLevels.isEmpty() && !ConfigSettings.filterAllowedLevels.contains(event.getLevel().name())) return;
+
         // time
         LocalTime time = Instant.ofEpochMilli(event.getTimeMillis())
                 .atZone(ZoneId.systemDefault())

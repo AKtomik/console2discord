@@ -3,6 +3,10 @@ package io.itch.aktomik.console2Discord;
 import io.itch.aktomik.console2Discord.send.SendFormat;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public final class ConfigSettings {
     private ConfigSettings() {}
 
@@ -12,7 +16,6 @@ public final class ConfigSettings {
     public static String messageGoodbyeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
     public static String messageTruncationText = "...";
 
-    public static boolean contentGroupBySecond = true;
     public static int contentCharLimit = 1900;
 
     public static SendFormat contentFormat = SendFormat.INLINE;
@@ -25,7 +28,10 @@ public final class ConfigSettings {
     public static int contentStackTraceCharLimit = 1200;
     public static boolean contentStackTracePrioritizeFirstCause = true;
 
+    public static volatile Set<String> filterAllowedLevels = Collections.emptySet();
+
     public static int queueWaitCapacity = 100;
+    public static boolean queueGroupBySecond = true;
     public static int queuePostTryCount = 5;
 
     public static int queueWaitTimeResumeMs = 100;
@@ -57,8 +63,12 @@ public final class ConfigSettings {
         contentStackTraceCharLimit = c.getInt("content.stack-trace.char-limit", contentStackTraceCharLimit);
         contentStackTracePrioritizeFirstCause = c.getBoolean("content.stack-trace.prioritize-first-cause", contentStackTracePrioritizeFirstCause);
 
+        Set<String> set = new HashSet<>();
+        c.getStringList("filter.allowed-levels").forEach(s -> set.add(s.trim().toUpperCase()));
+        filterAllowedLevels = Collections.unmodifiableSet(set);
+
         queueWaitCapacity = c.getInt("queue.wait-capacity", queueWaitCapacity);
-        contentGroupBySecond = c.getBoolean("queue.group-by-second", contentGroupBySecond);
+        queueGroupBySecond = c.getBoolean("queue.group-by-second", queueGroupBySecond);
         queuePostTryCount = c.getInt("queue.request-try-count", queuePostTryCount);
 
         queueWaitTimeResumeMs = c.getInt("queue.wait-time.breath-start-ms", queueWaitTimeResumeMs);

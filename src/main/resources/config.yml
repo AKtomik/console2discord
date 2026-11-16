@@ -14,12 +14,12 @@ message:
   truncation-text: '...'
 
 content:
-  # [INFO] max number of characters for content body
-  # [WARN] discord limit is 2000, and a margin is needed for formating
+  # [INFO] max number of characters for content body of a message
+  # [WARN] discord limit is 2000 by message, and a margin is needed for formating
   body-char-limit: 1900
 
   # [INFO] change how is formated log on sending
-  # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
+  # [USE] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: 'ANSIBLOCK'
 
   # [ERROR] options working only if format is ANSI-BLOCK
@@ -43,6 +43,15 @@ content:
 
     # [INFO] if keeping the first cause line is a priority in truncation
     prioritize-first-cause: true
+
+filter:
+  # [INFO] only send logs of a certain level
+  # [USE] accepted levels: FATAL, ERROR, WARN, INFO (nothing for no filter)
+  allowed-levels:
+    #- 'FATAL'
+    #- 'ERROR'
+    #- 'WARN'
+    #- 'INFO'
 
 queue:
   # [INFO] how much logs can be stored in the queue
