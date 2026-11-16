@@ -46,18 +46,32 @@ public class AnsiToolbox {
         String body = origin.stream()
                 .map(unit -> {
                     String text = unit.text();
-                    if (unit.level() == Level.ERROR && ConfigSettings.contentAnsiColorError) text = "\033[31m" + text;
-                    if (unit.level() == Level.WARN && ConfigSettings.contentAnsiColorWarning) text = "\033[93m" + text;
-                    return legacyToAnsi(text);
+                    if (ConfigSettings.contentAnsiConvertLegacy) text = legacyToAnsi(text);
+                    if (ConfigSettings.contentAnsiColorError && unit.level() == Level.ERROR) text = "\033[31m" + text;
+                    else if (ConfigSettings.contentAnsiColorWarning && unit.level() == Level.WARN) text = "\033[93m" + text;
+                    return text;
                 })
                 .collect(Collectors.joining("\033[0m\n"));
         return "```ansi\n" + body + "\n```";
     }
 
-    public static String makeColorless(List<LogUnit> origin)
+    public static String makeCodeBlock(List<LogUnit> origin)
+    {
+        String body = makeText(origin);
+        return "```\n" + body + "\n```";
+    }
+
+    public static String makeCodeLine(List<LogUnit> origin)
     {
         return origin.stream()
                 .map(unit -> "`" + unit.text() + "`")
+                .collect(Collectors.joining("\n"));
+    }
+
+    public static String makeText(List<LogUnit> origin)
+    {
+        return origin.stream()
+                .map(LogUnit::text)
                 .collect(Collectors.joining("\n"));
     }
 }

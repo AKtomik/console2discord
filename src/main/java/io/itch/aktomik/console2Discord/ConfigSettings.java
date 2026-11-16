@@ -13,7 +13,9 @@ public final class ConfigSettings {
     public static boolean contentGroupBySecond = true;
     public static int contentCharLimit = 1900;
 
-    public static boolean contentAnsiEnable = true;
+    public static SendFormat contentFormat = SendFormat.INLINE;
+
+    public static boolean contentAnsiConvertLegacy = true;
     public static boolean contentAnsiColorWarning = true;
     public static boolean contentAnsiColorError = true;
 
@@ -39,7 +41,10 @@ public final class ConfigSettings {
         messageWelcomeText = c.getString("message.welcome-text", messageWelcomeText);
         messageGoodbyeText = c.getString("message.goodbye-text", messageGoodbyeText);
 
-        contentAnsiEnable = c.getBoolean("content.ansi.enable", contentAnsiEnable);
+        contentFormat = SendFormat.fromString(c.getString("content.format", String.valueOf(contentFormat)));
+        if (contentFormat == null) contentFormat = SendFormat.TEXT;
+
+        contentAnsiConvertLegacy = c.getBoolean("content.ansi.convert-legacy", contentAnsiConvertLegacy);
         contentAnsiColorWarning = c.getBoolean("content.ansi.color-warning", contentAnsiColorWarning);
         contentAnsiColorError = c.getBoolean("content.ansi.color-error", contentAnsiColorError);
 

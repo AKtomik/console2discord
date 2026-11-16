@@ -81,9 +81,13 @@ public class SendLoop {
                 }
 
                 // message send
-                String message = ConfigSettings.contentAnsiEnable
-                        ? AnsiToolbox.makeAnsiBlock(sendingLogs)
-                        : AnsiToolbox.makeColorless(sendingLogs);
+                String message = switch (ConfigSettings.contentFormat)
+                {
+                    case CODEBLOCK -> AnsiToolbox.makeCodeBlock(sendingLogs);
+                    case ANSIBLOCK -> AnsiToolbox.makeAnsiBlock(sendingLogs);
+                    case INLINE -> AnsiToolbox.makeCodeLine(sendingLogs);
+                    case TEXT -> AnsiToolbox.makeText(sendingLogs);
+                };
                 int sendingSize = sendingLogs.size();
                 sendingLogs.clear();
 

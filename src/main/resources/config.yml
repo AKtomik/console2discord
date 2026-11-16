@@ -20,17 +20,20 @@ content:
   # [WARN] discord limit is 2000, and a margin is needed for formating
   total-char-limit: 1900
 
+  # [INFO] change how is formated log on sending
+  # [INFO] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
+  format: ANSIBLOCK
+
   ansi:
+    # [WARN] options working only if format is ANSI-BLOCK
 
-    # [INFO] enable ANSI format for colors
-    enable: true
+    # [INFO] convert detected legacy color (using §) to ansi
+    convert-legacy: true
 
-    # [INFO] do apply a color to warnings logs
-    # [WARN] only works if ANSI is enabled
+    # [INFO] do apply a yellow color to warnings logs
     color-warning: true
 
-    # [INFO] do apply a color to errors logs
-    # [WARN] only works if ANSI is enabled
+    # [INFO] do apply a red color to errors logs
     color-error: true
 
 
