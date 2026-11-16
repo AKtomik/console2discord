@@ -21,8 +21,8 @@ public final class Console2Discord extends JavaPlugin {
     WebhookMailer mailer = null;
     LogListen appender = null;
     SendLoop loop = null;
-    BlockingQueue<LogUnit> queue;
-    Thread shutdownThread;
+    BlockingQueue<LogUnit> queue = null;
+    Thread shutdownThread = null;
 
     boolean killed = false;
     boolean configResolved = false;
@@ -44,14 +44,10 @@ public final class Console2Discord extends JavaPlugin {
         }
         ConfigSettings.load(config);
 
-        // queue
-        queue = new LinkedBlockingQueue<>(ConfigSettings.queueWaitCapacity);
+        // start listen
+        startListen();
 
-        // appender
-        appender = new LogListen(queue);
-        appender.start();
-        rootCoreLogger.addAppender(appender);
-
+        // log
         getLogger().info("Loaded!");
     }
 
@@ -60,53 +56,19 @@ public final class Console2Discord extends JavaPlugin {
         // command
         this.getCommand("console2discord").setExecutor(new TheCommand(this));
 
-        // cleanup if wrong reload
+        // cleanup if components enabled
         if (mailer != null) shutdown();
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
-        // config
+        // config load
         if (!configResolved) {
             saveDefaultConfig();
             ConfigSettings.load(getConfig());
             configResolved = true;
         }
 
-        // webhook check
-        String webhookUrl = ConfigSettings.webhookUrl;
-        if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
-            getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
-            kill();
-            return;
-        }
-        if (Objects.equals(webhookUrl, "MISSING")) {
-            getLogger().severe("webhook URL is not loaded from plugins/console2discord/config.yml");
-            kill();
-            return;
-        }
-
-        // mail
-        mailer = new WebhookMailer(webhookUrl);
-        String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
-        String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
-        int status = mailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
-        if (200 <= status && status < 300) {
-            getLogger().info("Hello message sent");
-        } else {
-            String logMessage = "Hello message was not sent";
-            if (status == -1) logMessage = "Critical failure during web request";
-            else if (status == -2) logMessage = "Illegal URL for web request";
-            else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
-            getLogger().severe(logMessage);
-            mailer = null;
-            kill();
-            return;
-        }
-
-        // loop
-        loop = new SendLoop(queue, mailer);
-        loop.enable();
-        shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");
-        Runtime.getRuntime().addShutdownHook(shutdownThread);
+        // start communication
+        if (!startCommunication()) harakiri();
 
         // log
         getLogger().info("Enabled!");
@@ -130,27 +92,82 @@ public final class Console2Discord extends JavaPlugin {
         }
     }
 
-    public void kill() {
-        killed = true;
-        getLogger().warning("Self disabling...");
-        getServer().getPluginManager().disablePlugin(this);
+    public void startListen() {
+        // queue
+        queue = new LinkedBlockingQueue<>(ConfigSettings.queueWaitCapacity);
+
+        // appender
+        appender = new LogListen(queue);
+        appender.start();
+        rootCoreLogger.addAppender(appender);
     }
 
-    public void shutdown() {
+    public void stopListen() {
+        // appender
+        rootCoreLogger.removeAppender(appender);
+        appender.stop();
+    }
+
+    public boolean startCommunication() {
+        // webhook check
+        String webhookUrl = ConfigSettings.webhookUrl;
+        if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
+            getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
+            return false;
+        }
+        if (Objects.equals(webhookUrl, "MISSING")) {
+            getLogger().severe("webhook URL is not loaded from plugins/console2discord/config.yml");
+            return false;
+        }
+
+        // mail
+        mailer = new WebhookMailer(webhookUrl);
+        String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
+        String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
+        int status = mailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
+        if (200 <= status && status < 300) {
+            getLogger().info("Hello message sent");
+        } else {
+            String logMessage = "Hello message was not sent";
+            if (status == -1) logMessage = "Critical failure during web request";
+            else if (status == -2) logMessage = "Illegal URL for web request";
+            else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
+            getLogger().severe(logMessage);
+            mailer = null;
+            return false;
+        }
+
+        // loop
+        loop = new SendLoop(queue, mailer);
+        loop.enable();
+        shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
+
+        return true;
+    }
+
+    public void stopCommunication() {
         // mail
         Runnable will = () -> {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
+            SessionStats.reset();
             mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
         };
-
-        // appender
-        rootCoreLogger.removeAppender(appender);
-        appender.stop();
-
         // loop
-        loop.disable(will);
+        loop.disable(will);// will monopolize the thread
+    }
+
+    public void shutdown() {
+        stopListen();
+        stopCommunication();
+    }
+
+    private void harakiri() {
+        killed = true;
+        getLogger().warning("Self disabling...");
+        getServer().getPluginManager().disablePlugin(this);
     }
 
     @Override
