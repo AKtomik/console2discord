@@ -56,8 +56,8 @@ public final class Console2Discord extends JavaPlugin {
         // command
         this.getCommand("console2discord").setExecutor(new TheCommand(this));
 
-        // cleanup if components enabled
-        if (mailer != null) shutdown();
+        // cleanup from reload
+        if (isCommunicating()) stopCommunication();
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // config load
@@ -69,6 +69,10 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         if (!startCommunication()) harakiri();
+
+        // shutdown listen
+        shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         // log
         getLogger().info("Enabled!");
@@ -92,7 +96,9 @@ public final class Console2Discord extends JavaPlugin {
         }
     }
 
-    public void startListen() {
+    // - listen -
+
+    void startListen() {
         // queue
         queue = new LinkedBlockingQueue<>(ConfigSettings.queueWaitCapacity);
 
@@ -102,13 +108,20 @@ public final class Console2Discord extends JavaPlugin {
         rootCoreLogger.addAppender(appender);
     }
 
-    public void stopListen() {
+    void stopListen() {
         // appender
         rootCoreLogger.removeAppender(appender);
         appender.stop();
+        appender = null;
     }
 
-    public boolean startCommunication() {
+    boolean isListening() {
+        return appender != null;
+    }
+
+    // - communication -
+
+    boolean startCommunication() {
         // webhook check
         String webhookUrl = ConfigSettings.webhookUrl;
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
@@ -140,13 +153,11 @@ public final class Console2Discord extends JavaPlugin {
         // loop
         loop = new SendLoop(queue, mailer);
         loop.enable();
-        shutdownThread = new Thread(this::shutdown, "Console2Discord-flush");
-        Runtime.getRuntime().addShutdownHook(shutdownThread);
 
         return true;
     }
 
-    public void stopCommunication() {
+    void stopCommunication() {
         // mail
         Runnable will = () -> {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
@@ -159,9 +170,15 @@ public final class Console2Discord extends JavaPlugin {
         loop.disable(will);// will monopolize the thread
     }
 
+    boolean isCommunicating() {
+        return mailer != null;
+    }
+
+    // - disable -
+
     public void shutdown() {
-        stopListen();
-        stopCommunication();
+        if (isListening()) stopListen();
+        if (isCommunicating()) stopCommunication();
     }
 
     private void harakiri() {
@@ -172,14 +189,6 @@ public final class Console2Discord extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        // if reload
-        // else, the shutdown hook handles it
-        //if (!Bukkit.isStopping() && !killed) {
-        //    if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
-        //    shutdown();
-        //}
-
-        // log
         getLogger().info("Disabled!");
     }
 }
