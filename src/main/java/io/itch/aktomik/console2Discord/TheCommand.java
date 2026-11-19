@@ -20,7 +20,7 @@ public class TheCommand implements CommandExecutor {
         String actionArgument = args[0].toLowerCase();
 
         switch (actionArgument) {
-            case "help": return false;
+            case "help": return getHelp(sender);
             case "status": return getStatus(sender);
             case "reload": return comReload(sender);
             case "start": return comStart(sender);
@@ -31,11 +31,27 @@ public class TheCommand implements CommandExecutor {
         return false;
     }
 
+    boolean getHelp(CommandSender sender) {
+        sender.sendMessage("""
+§8/console2discord §7help
+§f get this help message
+§8/console2discord §7status
+§f show current communication state
+§8/console2discord §7reload
+§f reload the config and try establish communication back
+§8/console2discord §7stop
+§f stop the communication of logs to discord
+§8/console2discord §7start
+§f start back the communication"""
+        );
+        return true;
+    }
+
     boolean getStatus(CommandSender sender) {
         String maj = "console2discord communication state: ";
-        if (plugin.isCommunicating()) sender.sendMessage(maj + "enabled");
-        else if (manualStop) sender.sendMessage(maj + "stopped");
-        else sender.sendMessage(maj + "failed");
+        if (plugin.isCommunicating()) sender.sendMessage(maj + "§l§aenabled");
+        else if (manualStop) sender.sendMessage(maj + "&l&estopped");
+        else sender.sendMessage(maj + "&l&cfailed");
         return true;
     }
 
@@ -47,43 +63,38 @@ public class TheCommand implements CommandExecutor {
         plugin.getLogger().info("config reloaded");
 
         if (plugin.isCommunicating() || manualStop) return getStatus(sender);
-        if (plugin.startCommunication()) {
-            if (!plugin.isListening()) plugin.startListen();
-            sender.sendMessage("communication started");
-        } else {
-            sender.sendMessage("communication failed");
-        }
-        return true;
+        return comStart(sender);
     }
 
     boolean comStart(CommandSender sender) {
         if (plugin.isCommunicating()) {
-            sender.sendMessage("communication is already enabled");
+            sender.sendMessage("§7communication is already enabled");
             return true;
         }
+
         manualStop = false;
 
         if (plugin.startCommunication()) {
             if (!plugin.isListening()) plugin.startListen();
-            sender.sendMessage("communication started");
+            sender.sendMessage("§acommunication started");
         }
         else {
-            sender.sendMessage("communication failed");
+            sender.sendMessage("§ccommunication failed");
         }
         return true;
     }
 
-
     boolean comStop(CommandSender sender) {
         if (manualStop && !plugin.isCommunicating()) {
-            sender.sendMessage("communication is already stopped");
+            sender.sendMessage("§7communication is already stopped");
             return true;
         }
+
         manualStop = true;
 
         plugin.stopCommunication();
         if (!ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
-        sender.sendMessage("communication stopped");
+        sender.sendMessage("§ecommunication stopped");
         return true;
     }
 }
