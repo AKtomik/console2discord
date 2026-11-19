@@ -46,6 +46,7 @@ public final class ConfigSettings {
     public static boolean debugTestError = false;
     public static boolean debugTestWarning = false;
     public static boolean debugTestCrash = false;
+    public static String debugGeneratedVersion = "nul";
 
     public static void load(FileConfiguration c) {
         webhookUrl = c.getString("webhook-url", webhookUrl);
@@ -86,5 +87,6 @@ public final class ConfigSettings {
         debugTestError = c.getBoolean("debug.test-error", debugTestError);
         debugTestWarning = c.getBoolean("debug.test-warning", debugTestWarning);
         debugTestCrash = c.getBoolean("debug.test-crash", debugTestCrash);
+        debugGeneratedVersion = c.getString("debug.generated-version", debugGeneratedVersion);
     }
 }

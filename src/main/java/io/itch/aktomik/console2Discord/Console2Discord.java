@@ -24,9 +24,6 @@ public final class Console2Discord extends JavaPlugin {
     BlockingQueue<LogUnit> queue = null;
     Thread shutdownThread = null;
 
-    boolean killed = false;
-    boolean configResolved = false;
-
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
     @Override
@@ -34,15 +31,7 @@ public final class Console2Discord extends JavaPlugin {
         super.onLoad();
 
         // config preload
-        FileConfiguration config;
-        try {
-            saveDefaultConfig();
-            config = getConfig();
-            configResolved = true;
-        } catch(Exception e) {
-            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        }
-        ConfigSettings.load(config);
+        configure();
 
         // start listen
         startListen();
@@ -59,13 +48,6 @@ public final class Console2Discord extends JavaPlugin {
         // cleanup from reload
         if (isCommunicating()) stopCommunication(false);
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
-
-        // config load
-        if (!configResolved) {
-            saveDefaultConfig();
-            ConfigSettings.load(getConfig());
-            configResolved = true;
-        }
 
         // start communication
         if (!startCommunication()) {
@@ -87,6 +69,24 @@ public final class Console2Discord extends JavaPlugin {
                 getLogger().log(Level.SEVERE, "Test Exception Caught", e);
             }
         }
+    }
+
+    // - misc -
+
+    public void configure() {
+        FileConfiguration config;
+        try {
+            saveDefaultConfig();
+            config = getConfig();
+        } catch(Exception e) {
+            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        }
+        ConfigSettings.load(config);
+        String configVersion = ConfigSettings.debugGeneratedVersion;
+        String pluginVersion = getDescription().getVersion();
+        if (!Objects.equals(configVersion, pluginVersion))
+            getLogger().warning("config version (" + configVersion + ") and plugin version (" + pluginVersion + ") does not match" +
+                    "\nremove your current configuration file to generate a new one");
     }
 
     // - listen -
