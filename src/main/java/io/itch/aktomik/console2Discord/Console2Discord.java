@@ -109,6 +109,8 @@ public final class Console2Discord extends JavaPlugin {
         appender = new LogListen(queue);
         appender.start();
         rootCoreLogger.addAppender(appender);
+
+        getLogger().info("Listen started");
     }
 
     void stopListen() {
@@ -116,6 +118,8 @@ public final class Console2Discord extends JavaPlugin {
         rootCoreLogger.removeAppender(appender);
         appender.stop();
         appender = null;
+
+        getLogger().info("Listen stopped");
     }
 
     boolean isListening() {
@@ -129,10 +133,12 @@ public final class Console2Discord extends JavaPlugin {
         String webhookUrl = ConfigSettings.webhookUrl;
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
             getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
+            getLogger().info("Communication failed");
             return false;
         }
         if (Objects.equals(webhookUrl, "MISSING")) {
             getLogger().severe("webhook URL is not loaded from plugins/console2discord/config.yml");
+            getLogger().info("Communication failed");
             return false;
         }
 
@@ -150,6 +156,7 @@ public final class Console2Discord extends JavaPlugin {
             else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
             getLogger().severe(logMessage);
             mailer = null;
+            getLogger().info("Communication failed");
             return false;
         }
 
@@ -173,6 +180,8 @@ public final class Console2Discord extends JavaPlugin {
         };
         // loop
         loop.disable(will);// will monopolize the thread
+
+        getLogger().info("Communication stopped");
     }
 
     boolean isCommunicating() {

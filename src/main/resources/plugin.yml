@@ -8,7 +8,7 @@ load: STARTUP
 commands:
   console2discord:
     description: Manage Console2Discord plugin
-    usage: /<command> [reload|start|stop|pause|help]
+    usage: /<command> [help | status | reload | start | stop | pause]
     aliases: [c2d]
     permission: console2discord.command
 

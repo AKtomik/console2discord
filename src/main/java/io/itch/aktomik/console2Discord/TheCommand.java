@@ -21,59 +21,69 @@ public class TheCommand implements CommandExecutor {
 
         switch (actionArgument) {
             case "help": return false;
-
-            case "reload":
-            {
-                plugin.reloadConfig();
-                ConfigSettings.load(plugin.getConfig());
-
-                sender.sendMessage("config reloaded from memory");
-                plugin.getLogger().info("config reloaded");
-
-                if (plugin.isCommunicating()) return true;
-                if (plugin.startCommunication()) {
-                    if (ConfigSettings.queueRememberDisconnected && !plugin.isListening()) plugin.startListen();
-                    sender.sendMessage("communication started");
-                } else {
-                    sender.sendMessage("communication failed");
-                }
-                return true;
-            }
-
-            case "start":
-            {
-                if (plugin.isCommunicating()) {
-                    sender.sendMessage("communication is already on");
-                    return true;
-                }
-
-                if (plugin.startCommunication())
-                {
-                    if (ConfigSettings.queueRememberDisconnected && !plugin.isListening()) plugin.startListen();
-                    sender.sendMessage("communication started");
-                }
-                else {
-                    sender.sendMessage("communication failed");
-                }
-                return true;
-            }
-
-            case "stop":
-            {
-                if (!plugin.isCommunicating()) {
-                    sender.sendMessage("communication is already off");
-                    return true;
-                }
-
-                plugin.stopCommunication();
-                if (ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
-                sender.sendMessage("communication stopped");
-                sender.sendMessage("[/console2discord start] to start again");
-                return true;
-            }
+            case "status": return getStatus(sender);
+            case "reload": return comReload(sender);
+            case "start": return comStart(sender);
+            case "stop": return comStop(sender);
         }
 
-        sender.sendMessage("wrong argument");
+        // sender.sendMessage("wrong argument");
+        return false;
+    }
+
+    boolean getStatus(CommandSender sender) {
+        String maj = "console2discord communication state: ";
+        if (plugin.isCommunicating()) sender.sendMessage(maj + "enabled");
+        else if (manualStop) sender.sendMessage(maj + "stopped");
+        else sender.sendMessage(maj + "failed");
+        return true;
+    }
+
+    boolean comReload(CommandSender sender) {
+        plugin.reloadConfig();
+        ConfigSettings.load(plugin.getConfig());
+
+        sender.sendMessage("config reloaded from memory");
+        plugin.getLogger().info("config reloaded");
+
+        if (plugin.isCommunicating() || manualStop) return getStatus(sender);
+        if (plugin.startCommunication()) {
+            if (!plugin.isListening()) plugin.startListen();
+            sender.sendMessage("communication started");
+        } else {
+            sender.sendMessage("communication failed");
+        }
+        return true;
+    }
+
+    boolean comStart(CommandSender sender) {
+        if (plugin.isCommunicating()) {
+            sender.sendMessage("communication is already enabled");
+            return true;
+        }
+        manualStop = false;
+
+        if (plugin.startCommunication()) {
+            if (!plugin.isListening()) plugin.startListen();
+            sender.sendMessage("communication started");
+        }
+        else {
+            sender.sendMessage("communication failed");
+        }
+        return true;
+    }
+
+
+    boolean comStop(CommandSender sender) {
+        if (manualStop && !plugin.isCommunicating()) {
+            sender.sendMessage("communication is already stopped");
+            return true;
+        }
+        manualStop = true;
+
+        plugin.stopCommunication();
+        if (!ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
+        sender.sendMessage("communication stopped");
         return true;
     }
 }
