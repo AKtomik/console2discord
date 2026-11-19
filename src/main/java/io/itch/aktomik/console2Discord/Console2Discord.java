@@ -57,7 +57,7 @@ public final class Console2Discord extends JavaPlugin {
         this.getCommand("console2discord").setExecutor(new TheCommand(this));
 
         // cleanup from reload
-        if (isCommunicating()) stopCommunication();
+        if (isCommunicating()) stopCommunication(false);
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // config load
@@ -69,8 +69,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         if (!startCommunication()) {
-            getLogger().warning("communication failed, and is disabled for now");
-            getLogger().warning("you can reload config and retry with [/c2d reload]");
+            getLogger().warning("communication failed, you cand reconfigure and retry with [/c2d reload]");
         }
 
         // shutdown listen
@@ -83,19 +82,10 @@ public final class Console2Discord extends JavaPlugin {
         if (ConfigSettings.debugTestWarning) getLogger().warning("Test Warning");
         if (ConfigSettings.debugTestCrash) {
             try {
-                throw new IllegalStateException("Test Catch Crash", new RuntimeException("Exception Cause"));
+                throw new IllegalStateException("Test Exception Message", new RuntimeException("Test Exception Cause"));
             } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "Caught Test Exception", e);
+                getLogger().log(Level.SEVERE, "Test Exception Caught", e);
             }
-//            new Thread(
-//                    () -> getLogger().log(Level.SEVERE, "Test Async Crash", new RuntimeException("Exception Cause"))
-//                    , "Test-Thread"
-//            ).start();
-//            Consumer<Integer> recurse = (Integer n) -> {
-//                if (n == 0) throw new RuntimeException("deep");
-//                recurse.accept(n - 1);
-//            };
-//            try { recurse.accept(60); } catch (Exception e) { getLogger().log(Level.SEVERE, "Deep trace", e); }
         }
     }
 
@@ -168,7 +158,7 @@ public final class Console2Discord extends JavaPlugin {
         return true;
     }
 
-    void stopCommunication() {
+    void stopCommunication(boolean allowDelay) {
         // mail
         Runnable will = () -> {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
@@ -179,7 +169,8 @@ public final class Console2Discord extends JavaPlugin {
             mailer = null;
         };
         // loop
-        loop.disable(will);// will monopolize the thread
+        if (allowDelay) loop.disableNow();
+        else loop.disable(will);// will monopolize the thread
 
         getLogger().info("Communication stopped");
     }
@@ -192,13 +183,7 @@ public final class Console2Discord extends JavaPlugin {
 
     public void shutdown() {
         if (isListening()) stopListen();
-        if (isCommunicating()) stopCommunication();
-    }
-
-    private void harakiri() {
-        killed = true;
-        getLogger().warning("Self disabling...");
-        getServer().getPluginManager().disablePlugin(this);
+        if (isCommunicating()) stopCommunication(true);
     }
 
     @Override

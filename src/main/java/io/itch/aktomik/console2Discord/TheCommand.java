@@ -92,7 +92,7 @@ public class TheCommand implements CommandExecutor {
 
         manualStop = true;
 
-        plugin.stopCommunication();
+        plugin.stopCommunication(false);
         if (!ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
         sender.sendMessage("§ecommunication stopped");
         return true;
