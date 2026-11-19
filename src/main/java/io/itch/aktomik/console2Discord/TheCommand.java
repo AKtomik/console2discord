@@ -50,8 +50,8 @@ public class TheCommand implements CommandExecutor {
     boolean getStatus(CommandSender sender) {
         String maj = "console2discord communication state: ";
         if (plugin.isCommunicating()) sender.sendMessage(maj + "§l§aenabled");
-        else if (manualStop) sender.sendMessage(maj + "&l&estopped");
-        else sender.sendMessage(maj + "&l&cfailed");
+        else if (manualStop) sender.sendMessage(maj + "§l§estopped");
+        else sender.sendMessage(maj + "§l§cfailed");
         return true;
     }
 
