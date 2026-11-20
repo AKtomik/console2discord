@@ -3,6 +3,7 @@ package io.itch.aktomik.console2Discord.listen;
 import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.SessionStats;
 import io.itch.aktomik.console2Discord.utils.LogQueue;
+import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -23,44 +24,6 @@ public class LogListen extends AbstractAppender {
     public LogListen(LogQueue buffer) {
         super("LogListen", null, null, false);
         queue = buffer;
-    }
-
-    private static String truncateStack(String stack, int limit, boolean prioritizeCause, String truncationMessage) {
-        if (stack.length() <= limit) return stack;
-
-        if (prioritizeCause) {
-            int causeIdx = stack.lastIndexOf("\nCaused by:");
-            if (causeIdx > 0) {
-                int headEnd = stack.indexOf('\n');
-                String head = stack.substring(0, headEnd);
-                String content = stack.substring(headEnd, causeIdx);
-                String cause = stack.substring(causeIdx);
-
-                int room = limit;
-                if (room <= head.length()) {
-                    if (room < head.length()) head = head.substring(0, room) + truncationMessage;
-                    return head;
-                }
-                room -= head.length();
-
-                if (room <= cause.length()) {
-                    if (room < cause.length()) cause = cause.substring(0, room) + truncationMessage;
-                    return head + cause;
-                }
-                room -= cause.length();
-
-                if (room < content.length()) content = content.substring(0, room) + "\n\t" + truncationMessage;
-                return head + content + cause;
-            }
-        }
-
-        return stack.substring(0, limit) + truncationMessage;
-    }
-
-    private static String truncateLine(String line, int limit, String truncationMessage) {
-        if (line.length() <= limit) return line;
-
-        return line.substring(0, limit) + truncationMessage;
     }
 
     @Override
@@ -92,7 +55,7 @@ public class LogListen extends AbstractAppender {
                 StringWriter sw = new StringWriter();
                 thrown.printStackTrace(new PrintWriter(sw));
                 stackStr = "\n" + sw.toString().stripTrailing();
-                stackStr = truncateStack(
+                stackStr = TruncationToolbox.truncateStack(
                         stackStr,
                         ConfigSettings.contentStackTraceCharLimit,
                         ConfigSettings.contentStackTracePrioritizeFirstCause,
@@ -103,7 +66,7 @@ public class LogListen extends AbstractAppender {
 
         // combine
         String line = timeStr + pluginStr + msgStr;
-        line = truncateLine(line, ConfigSettings.contentLineCharLimit, ConfigSettings.messageTruncationText);
+        line = TruncationToolbox.truncateLine(line, ConfigSettings.contentLineCharLimit, ConfigSettings.messageTruncationText);
         line += stackStr;
         LogUnit unit = new LogUnit(line, time, level);
 

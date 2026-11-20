@@ -4,6 +4,7 @@ import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.listen.LogUnit;
 import io.itch.aktomik.console2Discord.SessionStats;
 import io.itch.aktomik.console2Discord.utils.LogQueue;
+import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 import io.itch.aktomik.console2Discord.utils.WebhookMailer;
 
 import java.util.ArrayList;
@@ -67,10 +68,8 @@ public class SendLoop {
                 // if one message is already too long
                 if (nextLog.length() > ConfigSettings.contentBodyCharLimit)
                 {
-                    String truncationMessage = ConfigSettings.messageTruncationText;
-                    String logText = nextLog.text().substring(0, Math.max(0, ConfigSettings.contentBodyCharLimit - truncationMessage.length())) + truncationMessage;
+                    String logText = TruncationToolbox.truncateLine(nextLog.text(), ConfigSettings.contentBodyCharLimit, ConfigSettings.messageTruncationText);
                     nextLog = new LogUnit(logText, nextLog.time(), nextLog.level());
-
                 }
 
                 // first setup
