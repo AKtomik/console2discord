@@ -1,8 +1,8 @@
 package io.itch.aktomik.console2Discord;
 
 import io.itch.aktomik.console2Discord.listen.LogListen;
-import io.itch.aktomik.console2Discord.listen.LogUnit;
 import io.itch.aktomik.console2Discord.send.SendLoop;
+import io.itch.aktomik.console2Discord.utils.LogQueue;
 import io.itch.aktomik.console2Discord.utils.WebhookMailer;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
@@ -12,8 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Objects;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 
 public final class Console2Discord extends JavaPlugin {
@@ -23,8 +21,7 @@ public final class Console2Discord extends JavaPlugin {
     SendLoop loop = null;
     Thread shutdownThread = null;
 
-    volatile BlockingQueue<LogUnit> queue = null;
-    volatile int queueCapacity = -1;
+    volatile LogQueue queue;
 
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
@@ -72,8 +69,7 @@ public final class Console2Discord extends JavaPlugin {
 
     void startListen() {
         // queue
-        queueCapacity = ConfigSettings.queueWaitCapacity;
-        queue = new LinkedBlockingQueue<>(queueCapacity);
+        queue = new LogQueue(ConfigSettings.queueWaitCapacity);
 
         // appender
         appender = new LogListen(queue);
@@ -171,15 +167,10 @@ public final class Console2Discord extends JavaPlugin {
 
         // config changes
         final int configCapacity = ConfigSettings.queueWaitCapacity;
-        if (isListening() && configCapacity != queueCapacity)
+        if (isListening() && configCapacity != queue.getCapacity())
         {
-            getLogger().info("Switch from queue a to queue b: " + queueCapacity + " to " + configCapacity);
-            BlockingQueue<LogUnit> oldQueue = this.queue;
-            BlockingQueue<LogUnit> newQueue = new LinkedBlockingQueue<>(configCapacity);
-            this.queue = newQueue;
-
-            while (oldQueue.size() > configCapacity) oldQueue.poll();
-            if (newQueue.remainingCapacity() > 0) oldQueue.drainTo(newQueue);
+            getLogger().info("Switch from queue a to queue b: " + queue.getCapacity() + " to " + configCapacity);
+            queue.setCapacity(configCapacity);
         }
     }
 

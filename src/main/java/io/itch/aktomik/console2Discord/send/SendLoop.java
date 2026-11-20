@@ -3,11 +3,11 @@ package io.itch.aktomik.console2Discord.send;
 import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.listen.LogUnit;
 import io.itch.aktomik.console2Discord.SessionStats;
+import io.itch.aktomik.console2Discord.utils.LogQueue;
 import io.itch.aktomik.console2Discord.utils.WebhookMailer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 public class SendLoop {
@@ -15,11 +15,11 @@ public class SendLoop {
     private volatile boolean running = false;
     private final Thread worker = new Thread(this::loop, "Console2Discord");
 
-    BlockingQueue<LogUnit> queue;
+    LogQueue queue;
     WebhookMailer mailer;
 
-    public SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
-        queue = providedQueue;
+    public SendLoop(LogQueue buffer, WebhookMailer providedMailer) {
+        queue = buffer;
         mailer = providedMailer;
     }
 

@@ -2,6 +2,7 @@ package io.itch.aktomik.console2Discord.listen;
 
 import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.SessionStats;
+import io.itch.aktomik.console2Discord.utils.LogQueue;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;
 import org.apache.logging.log4j.core.appender.AbstractAppender;
@@ -12,17 +13,16 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.BlockingQueue;
 
 public class LogListen extends AbstractAppender {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
-    BlockingQueue<LogUnit> queue;
+    LogQueue queue;
 
-    public LogListen(BlockingQueue<LogUnit> providedQueue) {
+    public LogListen(LogQueue buffer) {
         super("LogListen", null, null, false);
-        queue = providedQueue;
+        queue = buffer;
     }
 
     private static String truncateStack(String stack, int limit, boolean prioritizeCause, String truncationMessage) {
