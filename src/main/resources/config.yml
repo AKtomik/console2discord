@@ -21,6 +21,9 @@ content:
   # [INFO] max number of characters for one log line
   line-char-limit: 1900
 
+  # [INFO] if show log origin (is most of the time a plugin name)
+  show-origin: true
+
   # [INFO] change how is formated log on sending
   # [USE] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: 'ANSIBLOCK'
@@ -35,7 +38,6 @@ content:
 
     # [INFO] do apply a red color to errors logs
     color-error: true
-
 
   stack-trace:
     # [INFO] if stack trace is forwarded to discord

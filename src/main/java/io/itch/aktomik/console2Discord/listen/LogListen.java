@@ -32,10 +32,12 @@ public class LogListen extends AbstractAppender {
         String msgStr = event.getMessage().getFormattedMessage();
 
         // plugin
+        String originStr = "";
         String name = event.getLoggerName();
-        boolean looksLikePlugin = name != null && !name.isBlank() && !name.contains(".");
-        String pluginStr = "";
-        if (looksLikePlugin && !msgStr.startsWith("[" + name + "]")) pluginStr = "[" + name + "] ";
+        // name.contains(".")) -> if class
+        if (name != null && !name.isBlank() && !msgStr.startsWith("[" + name + "]") && ConfigSettings.contentShowOrigin) {
+            originStr = "[" + name + "] ";
+        }
 
         // filter
         if (!ConfigSettings.filterAllowedLevels.isEmpty() && !ConfigSettings.filterAllowedLevels.contains(event.getLevel().name())) return;
@@ -65,7 +67,7 @@ public class LogListen extends AbstractAppender {
         }
 
         // combine
-        String line = timeStr + pluginStr + msgStr;
+        String line = timeStr + originStr + msgStr;
         line = TruncationToolbox.truncateLine(line, ConfigSettings.contentLineCharLimit, ConfigSettings.messageTruncationText);
         line += stackStr;
         LogUnit unit = new LogUnit(line, time, level);
