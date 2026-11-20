@@ -56,9 +56,9 @@ public class TheCommand implements CommandExecutor {
     }
 
     boolean comReload(CommandSender sender) {
-        plugin.configure();
+        plugin.loadConfig();
+        plugin.debugMessages();
         sender.sendMessage("config reloaded from memory");
-        plugin.getLogger().info("config reloaded");
 
         if (plugin.isCommunicating() || manualStop) return getStatus(sender);
         return comStart(sender);

@@ -21,17 +21,21 @@ public final class Console2Discord extends JavaPlugin {
     WebhookMailer mailer = null;
     LogListen appender = null;
     SendLoop loop = null;
-    BlockingQueue<LogUnit> queue = null;
     Thread shutdownThread = null;
 
+    volatile BlockingQueue<LogUnit> queue = null;
+    volatile int queueCapacity = -1;
+
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
+
+    // - enable -
 
     @Override
     public void onLoad() {
         super.onLoad();
 
         // config preload
-        configure();
+        loadConfig();
 
         // start listen
         startListen();
@@ -60,40 +64,15 @@ public final class Console2Discord extends JavaPlugin {
 
         // log
         getLogger().info("Enabled!");
-        if (ConfigSettings.debugTestError) getLogger().severe("Test Error");
-        if (ConfigSettings.debugTestWarning) getLogger().warning("Test Warning");
-        if (ConfigSettings.debugTestCrash) {
-            try {
-                throw new IllegalStateException("Test Exception Message", new RuntimeException("Test Exception Cause"));
-            } catch (Exception e) {
-                getLogger().log(Level.SEVERE, "Test Exception Caught", e);
-            }
-        }
-    }
-
-    // - misc -
-
-    public void configure() {
-        FileConfiguration config;
-        try {
-            saveDefaultConfig();
-            config = getConfig();
-        } catch(Exception e) {
-            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        }
-        ConfigSettings.load(config);
-        String configVersion = ConfigSettings.debugGeneratedVersion;
-        String pluginVersion = getDescription().getVersion();
-        if (!Objects.equals(configVersion, pluginVersion))
-            getLogger().warning("config version (" + configVersion + ") and plugin version (" + pluginVersion + ") does not match" +
-                    "\nremove your current configuration file to generate a new one");
+        debugMessages();
     }
 
     // - listen -
 
     void startListen() {
         // queue
-        queue = new LinkedBlockingQueue<>(ConfigSettings.queueWaitCapacity);
+        queueCapacity = ConfigSettings.queueWaitCapacity;
+        queue = new LinkedBlockingQueue<>(queueCapacity);
 
         // appender
         appender = new LogListen(queue);
@@ -177,6 +156,58 @@ public final class Console2Discord extends JavaPlugin {
 
     boolean isCommunicating() {
         return mailer != null;
+    }
+
+    // - misc -
+
+    public void loadConfig() {
+        FileConfiguration config;
+        try {
+            saveDefaultConfig();
+            config = getConfig();
+        } catch(Exception e) {
+            // can be used if coming from onLoad()
+            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        }
+
+        ConfigSettings.load(config);
+
+        // config changes
+        final int configCapacity = ConfigSettings.queueWaitCapacity;
+        getLogger().info("do switch from queue a to queue b???: " + queueCapacity + " to " + configCapacity);// !
+        if (isListening() && configCapacity != queueCapacity)
+        {
+            getLogger().info("Switch from queue a to queue b: " + queueCapacity + " to " + configCapacity);
+            BlockingQueue<LogUnit> oldQueue = this.queue;
+            BlockingQueue<LogUnit> newQueue = new LinkedBlockingQueue<>(configCapacity);
+            this.queue = newQueue;
+
+            while (oldQueue.size() > configCapacity) oldQueue.poll();
+            if (newQueue.remainingCapacity() > 0) oldQueue.drainTo(newQueue);
+        }
+        getLogger().info("Config loaded");
+    }
+
+    public void debugMessages() {
+        // debug config version
+        String configVersion = ConfigSettings.debugGeneratedVersion;
+        String pluginVersion = getDescription().getVersion();
+        if (!Objects.equals(configVersion, pluginVersion))
+        {
+            getLogger().warning("config version (" + configVersion + ") and plugin version (" + pluginVersion + ") does not match" +
+                    "\nremove your current configuration file to generate a new one");
+        }
+
+        // debug errors and others
+        if (ConfigSettings.debugTestWarning) getLogger().warning("Test Warning");
+        if (ConfigSettings.debugTestError) getLogger().severe("Test Error");
+        if (ConfigSettings.debugTestCrash) {
+            try {
+                throw new IllegalStateException("Test Exception Message", new RuntimeException("Test Exception Cause"));
+            } catch (Exception e) {
+                getLogger().log(Level.SEVERE, "Test Exception Caught", e);
+            }
+        }
     }
 
     // - disable -
