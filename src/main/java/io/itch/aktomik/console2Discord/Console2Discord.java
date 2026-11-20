@@ -149,7 +149,7 @@ public final class Console2Discord extends JavaPlugin {
             mailer = null;
         };
         // loop
-        if (allowDelay) loop.disableNow();
+        if (!allowDelay) loop.disableNow();
         else loop.disable(will);// will monopolize the thread
 
         getLogger().info("Communication stopped");
