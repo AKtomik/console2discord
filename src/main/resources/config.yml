@@ -60,7 +60,7 @@ filter:
 queue:
   # [INFO] how much logs can be stored in the queue
   # [WARN] if the queue is full, log messages are ignored
-  wait-capacity: 300
+  wait-capacity: 100
 
   # [INFO] will ignore older logs instead of newer when queue is full
   full-ignore-older: true

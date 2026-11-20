@@ -51,7 +51,7 @@ public final class Console2Discord extends JavaPlugin {
         this.getCommand("console2discord").setExecutor(new TheCommand(this));
 
         // cleanup from reload
-        if (isCommunicating()) stopCommunication(false);
+        if (isCommunicating()) stopCommunication(false, false);
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // start communication
@@ -138,9 +138,17 @@ public final class Console2Discord extends JavaPlugin {
         return true;
     }
 
-    void stopCommunication(boolean allowDelay) {
-        // mail
-        Runnable will = () -> {
+    void stopCommunication(boolean workerDelay, boolean goodbyeWill) {
+        // loop
+        if (workerDelay) {
+            // will monopolize the thread
+            loop.disableStart(ConfigSettings.queueWaitTimeShutdownWorkerMarginMs);
+        } else {
+            loop.disableNow();
+        }
+
+        // goodbye
+        if (goodbyeWill) {
             String statLine = SessionStats.sentSuccessCount + " logs sent"
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
@@ -148,9 +156,6 @@ public final class Console2Discord extends JavaPlugin {
             mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
             mailer = null;
         };
-        // loop
-        if (!allowDelay) loop.disableNow();
-        else loop.disable(will);// will monopolize the thread
 
         getLogger().info("Communication stopped");
     }
@@ -166,7 +171,6 @@ public final class Console2Discord extends JavaPlugin {
 
         // config changes
         final int configCapacity = ConfigSettings.queueWaitCapacity;
-        getLogger().info("do switch from queue a to queue b???: " + queueCapacity + " to " + configCapacity);// !
         if (isListening() && configCapacity != queueCapacity)
         {
             getLogger().info("Switch from queue a to queue b: " + queueCapacity + " to " + configCapacity);
@@ -224,7 +228,7 @@ public final class Console2Discord extends JavaPlugin {
 
     public void shutdown() {
         if (isListening()) stopListen();
-        if (isCommunicating()) stopCommunication(true);
+        if (isCommunicating()) stopCommunication(true, true);
     }
 
     @Override

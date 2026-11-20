@@ -18,8 +18,6 @@ public class SendLoop {
     BlockingQueue<LogUnit> queue;
     WebhookMailer mailer;
 
-    private Runnable lastWill = null;
-
     public SendLoop(BlockingQueue<LogUnit> providedQueue, WebhookMailer providedMailer) {
         queue = providedQueue;
         mailer = providedMailer;
@@ -33,20 +31,15 @@ public class SendLoop {
         worker.start();
     }
 
-    public void disable() {
+    public void disableStart(int joinDelay) {
         if (!running) return;
         running = false;
 
         try {
-            worker.join(ConfigSettings.queueWaitTimeShutdownWorkerMarginMs);
+            worker.join(joinDelay);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void disable(Runnable inputWill) {
-        lastWill = inputWill;
-        disable();
     }
 
     public void disableNow() {
@@ -140,7 +133,5 @@ public class SendLoop {
         } catch (InterruptedException e) {
             throw new RuntimeException("InterruptedException in send loop", e);
         }
-
-        if (lastWill != null) lastWill.run();
     }
 }

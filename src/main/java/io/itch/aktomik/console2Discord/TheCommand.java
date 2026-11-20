@@ -98,7 +98,7 @@ public class TheCommand implements CommandExecutor {
 
         manualStop = true;
 
-        plugin.stopCommunication(false);
+        plugin.stopCommunication(false, true);
         if (!ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
         sender.sendMessage("§ecommunication stopped");
         return true;
@@ -112,7 +112,7 @@ public class TheCommand implements CommandExecutor {
     boolean setWebhook(CommandSender sender, String url) {
         sender.sendMessage("changing webhook url...");
 
-        plugin.stopCommunication(false);
+        plugin.stopCommunication(false, false);
         ConfigSettings.webhookUrl = url;
         plugin.startCommunication();
 
