@@ -1,8 +1,13 @@
 package io.itch.aktomik.console2Discord;
 
+import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 
 public class TheCommand implements CommandExecutor {
 
@@ -113,7 +118,15 @@ public class TheCommand implements CommandExecutor {
         sender.sendMessage("changing webhook url...");
 
         plugin.stopCommunication(false, false);
+
         ConfigSettings.webhookUrl = url;
+        plugin.getConfig().set("webhook-url", url);
+        try {
+            YamlToolbox.replaceTopLevelValue(new File(plugin.getDataFolder(), "config.yml"), "webhook-url", url);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.WARNING, "write of webhook-url in config failed", e);
+        }
+        plugin.reloadConfig();
         plugin.startCommunication();
 
         sender.sendMessage("changed webhook url to: "+url);

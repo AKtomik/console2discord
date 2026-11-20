@@ -135,6 +135,8 @@ public final class Console2Discord extends JavaPlugin {
     }
 
     void stopCommunication(boolean workerDelay, boolean goodbyeWill) {
+        if (loop == null) return;
+
         // loop
         if (workerDelay) {
             // will monopolize the thread
@@ -142,6 +144,7 @@ public final class Console2Discord extends JavaPlugin {
         } else {
             loop.disableNow();
         }
+        loop = null;
 
         // goodbye
         if (goodbyeWill) {
@@ -167,11 +170,7 @@ public final class Console2Discord extends JavaPlugin {
 
         // config changes
         final int configCapacity = ConfigSettings.queueWaitCapacity;
-        if (isListening() && configCapacity != queue.getCapacity())
-        {
-            getLogger().info("Switch from queue a to queue b: " + queue.getCapacity() + " to " + configCapacity);
-            queue.setCapacity(configCapacity);
-        }
+        if (isListening() && configCapacity != queue.getCapacity()) queue.setCapacity(configCapacity);
     }
 
     public void loadConfig() {
