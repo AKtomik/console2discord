@@ -35,6 +35,7 @@ public final class Console2Discord extends JavaPlugin {
         super.onLoad();
 
         // config preload
+        saveDefaultConfig();
         loadConfig();
 
         // start listen
@@ -160,16 +161,7 @@ public final class Console2Discord extends JavaPlugin {
 
     // - misc -
 
-    public void loadConfig() {
-        FileConfiguration config;
-        try {
-            saveDefaultConfig();
-            config = getConfig();
-        } catch(Exception e) {
-            // can be used if coming from onLoad()
-            config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
-        }
-
+    private void applyConfig(FileConfiguration config) {
         ConfigSettings.load(config);
 
         // config changes
@@ -185,7 +177,25 @@ public final class Console2Discord extends JavaPlugin {
             while (oldQueue.size() > configCapacity) oldQueue.poll();
             if (newQueue.remainingCapacity() > 0) oldQueue.drainTo(newQueue);
         }
+    }
+
+    public void loadConfig() {
+        try {
+            FileConfiguration config;
+            config = getConfig();
+            applyConfig(config);
+        } catch(Exception e) {
+            // can be used if coming from onLoad()
+            readConfig();
+            return;
+        }
         getLogger().info("Config loaded");
+    }
+
+    public void readConfig() {
+        FileConfiguration config = YamlConfiguration.loadConfiguration(new File(getDataFolder(), "config.yml"));
+        applyConfig(config);
+        getLogger().info("Config read");
     }
 
     public void debugMessages() {
