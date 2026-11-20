@@ -57,6 +57,12 @@ public class LogListen extends AbstractAppender {
         return stack.substring(0, limit) + truncationMessage;
     }
 
+    private static String truncateLine(String line, int limit, String truncationMessage) {
+        if (line.length() <= limit) return line;
+
+        return line.substring(0, limit) + truncationMessage;
+    }
+
     @Override
     public void append(LogEvent event) {
         // message
@@ -96,7 +102,9 @@ public class LogListen extends AbstractAppender {
         }
 
         // combine
-        String line = timeStr + pluginStr + msgStr + stackStr;
+        String line = timeStr + pluginStr + msgStr;
+        line = truncateLine(line, ConfigSettings.contentLineCharLimit, ConfigSettings.messageTruncationText);
+        line += stackStr;
         LogUnit unit = new LogUnit(line, time, level);
 
         // send

@@ -18,6 +18,9 @@ content:
   # [WARN] discord limit is 2000 by message, and a margin is needed for formating
   body-char-limit: 1900
 
+  # [INFO] max number of characters for one log line
+  line-char-limit: 1900
+
   # [INFO] change how is formated log on sending
   # [USE] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: 'ANSIBLOCK'

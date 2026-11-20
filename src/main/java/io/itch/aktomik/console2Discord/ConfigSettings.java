@@ -16,7 +16,8 @@ public final class ConfigSettings {
     public static String messageGoodbyeText = ":warning: config not correctly loaded, delete `plugins/console2discord` folder and restart";
     public static String messageTruncationText = "...";
 
-    public static int contentCharLimit = 1900;
+    public static int contentBodyCharLimit = 1900;
+    public static int contentLineCharLimit = 1900;
 
     public static SendFormat contentFormat = SendFormat.INLINE;
 
@@ -55,7 +56,8 @@ public final class ConfigSettings {
         messageGoodbyeText = c.getString("message.goodbye-text", messageGoodbyeText);
         messageTruncationText = c.getString("message.truncation-text", messageTruncationText);
 
-        contentCharLimit = c.getInt("content.body-char-limit", contentCharLimit);
+        contentBodyCharLimit = c.getInt("content.body-char-limit", contentBodyCharLimit);
+        contentLineCharLimit = c.getInt("content.line-char-limit", contentLineCharLimit);
         contentFormat = SendFormat.fromString(c.getString("content.format", String.valueOf(contentFormat)));
         if (contentFormat == null) contentFormat = SendFormat.TEXT;
 
