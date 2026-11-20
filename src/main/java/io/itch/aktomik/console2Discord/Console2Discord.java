@@ -103,7 +103,7 @@ public final class Console2Discord extends JavaPlugin {
             return false;
         }
         if (Objects.equals(webhookUrl, "MISSING")) {
-            getLogger().severe("webhook URL is not loaded from plugins/console2discord/config.yml");
+            getLogger().severe("Webhook URL is not loaded from plugins/console2discord/config.yml");
             getLogger().info("Communication failed");
             return false;
         }

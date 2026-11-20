@@ -1,5 +1,6 @@
 package io.itch.aktomik.console2Discord;
 
+import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,6 +8,7 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class TheCommand implements CommandExecutor {
@@ -115,9 +117,22 @@ public class TheCommand implements CommandExecutor {
     }
 
     boolean setWebhook(CommandSender sender, String url) {
-        sender.sendMessage("changing webhook url...");
+        if (Objects.equals(ConfigSettings.webhookUrl, url))
+        {
+            sender.sendMessage("is the same webhook url");
+            return true;
+        }
 
         plugin.stopCommunication(false, false);
+        sender.sendMessage("changing webhook url...");
+
+        if (plugin.startCommunication()) {
+            if (!plugin.isListening()) plugin.startListen();
+            sender.sendMessage("§acommunication started");
+        } else {
+            sender.sendMessage("§ccommunication failed");
+            return true;
+        }
 
         ConfigSettings.webhookUrl = url;
         plugin.getConfig().set("webhook-url", url);
@@ -127,9 +142,8 @@ public class TheCommand implements CommandExecutor {
             plugin.getLogger().log(Level.WARNING, "write of webhook-url in config failed", e);
         }
         plugin.reloadConfig();
-        plugin.startCommunication();
 
-        sender.sendMessage("changed webhook url to: "+url);
+        sender.sendMessage("changed webhook url to: "+ TruncationToolbox.truncateLine(url, 60, "*******/****..."));
         return getStatus(sender);
     }
 }
