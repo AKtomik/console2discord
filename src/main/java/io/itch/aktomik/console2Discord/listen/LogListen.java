@@ -31,19 +31,30 @@ public class LogListen extends AbstractAppender {
         if (prioritizeCause) {
             int causeIdx = stack.lastIndexOf("\nCaused by:");
             if (causeIdx > 0) {
-                String head = stack.substring(0, stack.indexOf('\n'));
+                int headEnd = stack.indexOf('\n');
+                String head = stack.substring(0, headEnd);
+                String content = stack.substring(headEnd, causeIdx);
                 String cause = stack.substring(causeIdx);
-                String separator = "\n\t" + truncationMessage;
 
-                int room = limit - head.length() - separator.length();
-                if (room > 0) {
-                    if (cause.length() > room) cause = cause.substring(0, room) + truncationMessage;
-                    return head + separator + cause;
+                int room = limit;
+                if (room <= head.length()) {
+                    if (room < head.length()) head = head.substring(0, room) + truncationMessage;
+                    return head;
                 }
+                room -= head.length();
+
+                if (room <= cause.length()) {
+                    if (room < cause.length()) cause = cause.substring(0, room) + truncationMessage;
+                    return head + cause;
+                }
+                room -= cause.length();
+
+                if (room < content.length()) content = content.substring(0, room) + "\n\t" + truncationMessage;
+                return head + content + cause;
             }
         }
 
-        return stack.substring(0, limit);
+        return stack.substring(0, limit) + truncationMessage;
     }
 
     @Override

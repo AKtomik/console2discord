@@ -39,6 +39,7 @@ content:
     allow: true
 
     # [INFO] max number of characters for a stack trace before truncating it
+    # [WARN] you need a margin with content.body-char-limit
     char-limit: 1200
 
     # [INFO] if keeping the first cause line is a priority in truncation
