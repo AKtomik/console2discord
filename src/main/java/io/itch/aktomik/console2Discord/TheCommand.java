@@ -21,6 +21,12 @@ public class TheCommand implements CommandExecutor {
 
         switch (actionArgument) {
             case "help": return getHelp(sender);
+            case "webhook": {
+                if (args.length > 1)
+                    return setWebhook(sender, args[1]);
+                else
+                    return getWebhook(sender);
+            }
             case "status": return getStatus(sender);
             case "reload": return comReload(sender);
             case "start": return comStart(sender);
@@ -35,6 +41,8 @@ public class TheCommand implements CommandExecutor {
         sender.sendMessage("""
 §8/console2discord §7help
 §f get this help message
+§8/console2discord §7webhook <url>
+§f set the webhook url
 §8/console2discord §7status
 §f show current communication state
 §8/console2discord §7reload
@@ -94,5 +102,21 @@ public class TheCommand implements CommandExecutor {
         if (!ConfigSettings.queueRememberDisconnected && plugin.isListening()) plugin.stopListen();
         sender.sendMessage("§ecommunication stopped");
         return true;
+    }
+
+    boolean getWebhook(CommandSender sender) {
+        sender.sendMessage("webhook url is: "+ConfigSettings.webhookUrl);
+        return getStatus(sender);
+    }
+
+    boolean setWebhook(CommandSender sender, String url) {
+        sender.sendMessage("changing webhook url...");
+
+        plugin.stopCommunication(false);
+        ConfigSettings.webhookUrl = url;
+        plugin.startCommunication();
+
+        sender.sendMessage("changed webhook url to: "+url);
+        return getStatus(sender);
     }
 }
