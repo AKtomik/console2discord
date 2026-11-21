@@ -9,7 +9,11 @@ import java.util.List;
 
 public class WebhookMailer {
 
-    URI uri;
+    final private URI uri;
+
+    public String getUrl() {
+        return uri.getRawPath();
+    }
 
     public WebhookMailer(String urlString) {
         uri = URI.create(urlString);
