@@ -27,6 +27,7 @@ public class TheCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         String actionArgument = (args.length == 0) ? "" : args[0].toLowerCase();
+        if (args.length > 1) return List.of();
         return Stream.of("help", "webhook", "status", "reload", "start", "stop").filter(s -> s.startsWith(actionArgument)).toList();
     }
 
