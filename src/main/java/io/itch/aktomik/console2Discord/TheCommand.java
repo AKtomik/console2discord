@@ -7,18 +7,27 @@ import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
-public class TheCommand implements CommandExecutor {
+public class TheCommand implements CommandExecutor, TabCompleter {
 
     Console2Discord plugin;
     boolean manualStop = false;
 
     public TheCommand(Console2Discord plugin) {
         this.plugin = plugin;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        String actionArgument = (args.length == 0) ? "" : args[0].toLowerCase();
+        return Stream.of("help", "webhook", "status", "reload", "start", "stop").filter(s -> s.startsWith(actionArgument)).toList();
     }
 
     @Override
