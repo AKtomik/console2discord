@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 public enum WebhookFormat {
     FINE(true, "webhook URL is fine"),
     NULL_URL(false, "webhook URL is null"),
+    SHORT_URL(false, "webhook URL is too hort"),
     YOUR_URL_HERE(false, "set your webhook URL in plugins/console2discord/config.yml when server stopped or using [/c2d webhook <url>] in game"),
     MISSING_URL(false, "webhook URL field is missing from config"),
     NO_HTTPS_URL(false, "webhook URL must start with https://"),
@@ -31,6 +32,7 @@ public enum WebhookFormat {
         if (url == null) return NULL_URL;
         if (Objects.equals(url, "YOUR_URL_HERE")) return YOUR_URL_HERE;
         if (Objects.equals(url, "MISSING")) return MISSING_URL;
+        if (url.length() < 32) return SHORT_URL;
         if (url.startsWith("http://")) return IS_HTTP_URL;
         if (!url.startsWith("https://")) return NO_HTTPS_URL;
         if (!WEBHOOK.matcher(url).matches()) return INVALID_WEBHOOK_URL;

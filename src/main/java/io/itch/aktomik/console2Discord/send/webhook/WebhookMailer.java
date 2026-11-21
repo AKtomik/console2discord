@@ -13,7 +13,8 @@ public class WebhookMailer {
 
     public WebhookMailer(String urlString) {
         urlFormat = WebhookFormat.validate(urlString);
-        uri = URI.create(urlString);
+        if (urlFormat.ok) uri = URI.create(urlString);
+        else uri = null;
     }
 
     // atrs
@@ -21,21 +22,22 @@ public class WebhookMailer {
     private final URI uri;
     private final WebhookFormat urlFormat;
 
-    public String getUrl() {
+    public String getUrlString() {
         return uri.getRawPath();
     }
 
-    public WebhookFormat getUrlFormat() {
+    public WebhookFormat getUrlValidation() {
         return urlFormat;
     }
 
-    public boolean isUrlOk() {
+    public boolean isUrlValid() {
         return urlFormat.ok();
     }
 
     // requests
 
     private WebhookStatus sendRequest(HttpRequest request) {
+        if (uri == null) return WebhookStatus.INVALID_URI;
         try {
             HttpClient client = HttpClient.newHttpClient();
             // send

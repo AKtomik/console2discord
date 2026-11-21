@@ -54,8 +54,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         WebhookMailer setupMailer = new WebhookMailer(ConfigSettings.webhookUrl);
-        if (!setupMailer.isUrlOk()) {
-            getLogger().severe(setupMailer.getUrlFormat().message());
+        if (!setupMailer.isUrlValid()) {
+            getLogger().severe(setupMailer.getUrlValidation().message());
             getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
         } else if (!startCommunication(setupMailer)) {
             getLogger().warning("communication failed, you can retry with [/c2d reload]");

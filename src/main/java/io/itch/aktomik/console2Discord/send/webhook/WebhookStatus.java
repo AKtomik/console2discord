@@ -2,6 +2,7 @@ package io.itch.aktomik.console2Discord.send.webhook;
 
 public enum WebhookStatus {
     SUCCESS(true, "webhook request sent"),
+    INVALID_URI(false, "uri is invalid"),
     INVALID_TOKEN(false, "webhook token is invalid"),
     UNKNOW_WEBHOOK(false, "unknow (or deleted) webhook"),
     GENERIC_SERVER_ERROR(false, "server error"),
