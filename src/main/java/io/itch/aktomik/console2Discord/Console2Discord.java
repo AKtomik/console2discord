@@ -52,7 +52,7 @@ public final class Console2Discord extends JavaPlugin {
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // start communication
-        if (!startCommunication()) {
+        if (!startCommunication(ConfigSettings.webhookUrl)) {
             getLogger().warning("communication failed, you cand reconfigure and retry with [/c2d reload]");
         }
 
@@ -94,9 +94,8 @@ public final class Console2Discord extends JavaPlugin {
 
     // - communication -
 
-    boolean startCommunication() {
+    boolean startCommunication(String webhookUrl) {
         // webhook check
-        String webhookUrl = ConfigSettings.webhookUrl;
         if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
             getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
             getLogger().info("Communication failed");
@@ -109,10 +108,10 @@ public final class Console2Discord extends JavaPlugin {
         }
 
         // mail
-        mailer = new WebhookMailer(webhookUrl);
+        WebhookMailer newMailer = new WebhookMailer(webhookUrl);
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
-        int status = mailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
+        int status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
         if (200 <= status && status < 300) {
             getLogger().info("Hello message sent");
         } else {
@@ -121,10 +120,12 @@ public final class Console2Discord extends JavaPlugin {
             else if (status == -2) logMessage = "Illegal URL for web request";
             else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
             getLogger().severe(logMessage);
-            mailer = null;
             getLogger().info("Communication failed");
             return false;
         }
+
+        // valid
+        mailer = newMailer;
 
         // loop
         loop = new SendLoop(queue, mailer);

@@ -87,7 +87,7 @@ public class TheCommand implements CommandExecutor {
 
         manualStop = false;
 
-        if (plugin.startCommunication()) {
+        if (plugin.startCommunication(ConfigSettings.webhookUrl)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         }
@@ -126,7 +126,7 @@ public class TheCommand implements CommandExecutor {
         plugin.stopCommunication(false, false);
         sender.sendMessage("changing webhook url...");
 
-        if (plugin.startCommunication()) {
+        if (plugin.startCommunication(url)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         } else {
