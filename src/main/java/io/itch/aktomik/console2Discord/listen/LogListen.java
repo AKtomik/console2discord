@@ -2,7 +2,6 @@ package io.itch.aktomik.console2Discord.listen;
 
 import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.SessionStats;
-import io.itch.aktomik.console2Discord.utils.LogQueue;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.LogEvent;

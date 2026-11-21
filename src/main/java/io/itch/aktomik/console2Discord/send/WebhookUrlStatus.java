@@ -1,4 +1,4 @@
-package io.itch.aktomik.console2Discord.utils;
+package io.itch.aktomik.console2Discord.send;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

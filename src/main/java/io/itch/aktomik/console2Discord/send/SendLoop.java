@@ -3,9 +3,8 @@ package io.itch.aktomik.console2Discord.send;
 import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.listen.LogUnit;
 import io.itch.aktomik.console2Discord.SessionStats;
-import io.itch.aktomik.console2Discord.utils.LogQueue;
+import io.itch.aktomik.console2Discord.listen.LogQueue;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
-import io.itch.aktomik.console2Discord.utils.WebhookMailer;
 
 import java.util.ArrayList;
 import java.util.List;

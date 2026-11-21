@@ -1,7 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
-import io.itch.aktomik.console2Discord.utils.WebhookUrlStatus;
+import io.itch.aktomik.console2Discord.send.WebhookUrlStatus;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.logging.Level;
 
 public class TheCommand implements CommandExecutor {

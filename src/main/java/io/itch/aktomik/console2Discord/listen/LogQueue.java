@@ -1,6 +1,4 @@
-package io.itch.aktomik.console2Discord.utils;
-
-import io.itch.aktomik.console2Discord.listen.LogUnit;
+package io.itch.aktomik.console2Discord.listen;
 
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;

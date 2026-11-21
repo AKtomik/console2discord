@@ -2,9 +2,9 @@ package io.itch.aktomik.console2Discord;
 
 import io.itch.aktomik.console2Discord.listen.LogListen;
 import io.itch.aktomik.console2Discord.send.SendLoop;
-import io.itch.aktomik.console2Discord.utils.LogQueue;
-import io.itch.aktomik.console2Discord.utils.WebhookMailer;
-import io.itch.aktomik.console2Discord.utils.WebhookUrlStatus;
+import io.itch.aktomik.console2Discord.listen.LogQueue;
+import io.itch.aktomik.console2Discord.send.WebhookMailer;
+import io.itch.aktomik.console2Discord.send.WebhookUrlStatus;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

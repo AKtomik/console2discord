@@ -1,4 +1,6 @@
-package io.itch.aktomik.console2Discord.utils;
+package io.itch.aktomik.console2Discord.send;
+
+import io.itch.aktomik.console2Discord.utils.JsonBuilder;
 
 import java.io.IOException;
 import java.net.URI;
