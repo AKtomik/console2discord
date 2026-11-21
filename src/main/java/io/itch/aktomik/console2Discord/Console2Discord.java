@@ -54,8 +54,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         WebhookMailer setupMailer = new WebhookMailer(ConfigSettings.webhookUrl);
-        if (setupMailer.getUrlStatus() != WebhookStatus.OK_FORMAT) {
-            getLogger().severe(setupMailer.getUrlStatus().message());
+        if (!setupMailer.isUrlOk()) {
+            getLogger().severe(setupMailer.getUrlFormat().message());
             getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
         } else if (!startCommunication(setupMailer)) {
             getLogger().warning("communication failed, you can retry with [/c2d start]");
@@ -104,7 +104,7 @@ public final class Console2Discord extends JavaPlugin {
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
         WebhookStatus status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
-        if (status == WebhookStatus.SUCCESS) {
+        if (status.OK()) {
             getLogger().info("Hello message sent");
         } else {
             getLogger().severe(status.message());

@@ -12,21 +12,25 @@ import java.util.List;
 public class WebhookMailer {
 
     public WebhookMailer(String urlString) {
-        urlStatus = WebhookStatus.validateFormat(urlString);
+        urlFormat = WebhookFormat.validate(urlString);
         uri = URI.create(urlString);
     }
 
-    // members
+    // atrs
 
     final private URI uri;
-    final private WebhookStatus urlStatus;
+    final private WebhookFormat urlFormat;
 
     public String getUrl() {
         return uri.getRawPath();
     }
 
-    public WebhookStatus getUrlStatus() {
-        return urlStatus;
+    public WebhookFormat getUrlFormat() {
+        return urlFormat;
+    }
+
+    public boolean isUrlOk() {
+        return urlFormat.OK();
     }
 
     // requests

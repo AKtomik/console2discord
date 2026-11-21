@@ -104,7 +104,7 @@ public class SendLoop {
                     WebhookStatus status = mailer.sendMessage(message);// waiting response
 
                     // fine
-                    if (status == WebhookStatus.SUCCESS)
+                    if (status.OK())
                     {
                         SessionStats.sentSuccessCount += sendingSize;
                         break;
