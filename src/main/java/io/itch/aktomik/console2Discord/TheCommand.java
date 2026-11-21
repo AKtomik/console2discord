@@ -90,8 +90,8 @@ public class TheCommand implements CommandExecutor {
 
         // validate
         WebhookMailer webhookMailer = new WebhookMailer(ConfigSettings.webhookUrl);
-        if (webhookMailer.getStatus() != WebhookStatus.OK_FORMAT) {
-            sender.sendMessage("§c" + webhookMailer.getStatus().message());
+        if (webhookMailer.getUrlStatus() != WebhookStatus.OK_FORMAT) {
+            sender.sendMessage("§c" + webhookMailer.getUrlStatus().message());
             return true;
         }
 
@@ -134,8 +134,8 @@ public class TheCommand implements CommandExecutor {
 
         // validate
         WebhookMailer webhookMailer = new WebhookMailer(url);
-        if (webhookMailer.getStatus() != WebhookStatus.OK_FORMAT) {
-            sender.sendMessage("§c" + webhookMailer.getStatus().message());
+        if (webhookMailer.getUrlStatus() != WebhookStatus.OK_FORMAT) {
+            sender.sendMessage("§c" + webhookMailer.getUrlStatus().message());
             return true;
         }
 

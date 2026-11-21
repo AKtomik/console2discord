@@ -12,40 +12,40 @@ import java.util.List;
 public class WebhookMailer {
 
     public WebhookMailer(String urlString) {
-        lastStatus = WebhookStatus.validateUrlFormat(urlString);
+        urlStatus = WebhookStatus.validateFormat(urlString);
         uri = URI.create(urlString);
     }
 
     // members
 
     final private URI uri;
-    final private WebhookStatus lastStatus;
+    final private WebhookStatus urlStatus;
 
     public String getUrl() {
         return uri.getRawPath();
     }
 
-    public WebhookStatus getStatus() {
-        return lastStatus;
+    public WebhookStatus getUrlStatus() {
+        return urlStatus;
     }
 
     // requests
 
-    private int sendRequest(HttpRequest request) {
+    private WebhookStatus sendRequest(HttpRequest request) {
         try {
             HttpClient client = HttpClient.newHttpClient();
             // send
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // success
-            return response.statusCode();
+            return WebhookStatus.fromStatus(response.statusCode());
         } catch (IOException e) {
-            return -1;
+            return WebhookStatus.OFFLINE;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private int sendJson(String json) {
+    private WebhookStatus sendJson(String json) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Content-Type", "application/json")
@@ -54,7 +54,7 @@ public class WebhookMailer {
         return sendRequest(request);
     }
 
-    private int tryGet() {
+    private WebhookStatus tryGet() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Content-Type", "application/json")
@@ -63,14 +63,14 @@ public class WebhookMailer {
         return sendRequest(request);
     }
 
-    public int sendMessage(String message) {
+    public WebhookStatus sendMessage(String message) {
         String json = new JsonBuilder()
                 .add("content", message)
                 .parse();
         return sendJson(json);
     }
 
-    public int sendEmbed(String title, String description, int color, String footer) {
+    public WebhookStatus sendEmbed(String title, String description, int color, String footer) {
         JsonBuilder embed = new JsonBuilder()
                 .add("title", title)
                 .add("description", description)

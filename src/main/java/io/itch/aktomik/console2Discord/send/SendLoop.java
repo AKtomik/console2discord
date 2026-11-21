@@ -101,17 +101,17 @@ public class SendLoop {
                 long timeBefore = System.currentTimeMillis();
                 for (int i = 0; i < ConfigSettings.queuePostTryCount; i++)
                 {
-                    int status = mailer.sendMessage(message);// waiting response
+                    WebhookStatus status = mailer.sendMessage(message);// waiting response
 
                     // fine
-                    if (200 <= status && status < 300)
+                    if (status == WebhookStatus.SUCCESS)
                     {
                         SessionStats.sentSuccessCount += sendingSize;
                         break;
                     }
 
                     // something wrong
-                    boolean retryable = status == 429 || status < 0 || (status >= 500 && status <= 504);
+                    boolean retryable = List.of(WebhookStatus.RATE_LIMIT, WebhookStatus.OFFLINE, WebhookStatus.GENERIC_SERVER_ERROR).contains(status);
                     if (!retryable) break;
 
                     if (i + 1 == ConfigSettings.queuePostTryCount)

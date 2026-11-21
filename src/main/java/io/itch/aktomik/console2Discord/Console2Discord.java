@@ -54,8 +54,8 @@ public final class Console2Discord extends JavaPlugin {
 
         // start communication
         WebhookMailer setupMailer = new WebhookMailer(ConfigSettings.webhookUrl);
-        if (setupMailer.getStatus() != WebhookStatus.OK_FORMAT) {
-            getLogger().severe(setupMailer.getStatus().message());
+        if (setupMailer.getUrlStatus() != WebhookStatus.OK_FORMAT) {
+            getLogger().severe(setupMailer.getUrlStatus().message());
             getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
         } else if (!startCommunication(setupMailer)) {
             getLogger().warning("communication failed, you can retry with [/c2d start]");
@@ -103,15 +103,11 @@ public final class Console2Discord extends JavaPlugin {
         // mail
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
-        int status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
-        if (200 <= status && status < 300) {
+        WebhookStatus status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
+        if (status == WebhookStatus.SUCCESS) {
             getLogger().info("Hello message sent");
         } else {
-            String logMessage = "Hello message was not sent";
-            if (status == -1) logMessage = "Critical failure during web request";
-            else if (status == -2) logMessage = "Illegal URL for web request";
-            else if (status > 0) logMessage = "Invalid status code after web request CODE=" + status;
-            getLogger().severe(logMessage);
+            getLogger().severe(status.message());
             getLogger().info("Communication failed");
             return false;
         }
