@@ -121,17 +121,11 @@ public class TheCommand implements CommandExecutor {
     }
 
     boolean getWebhook(CommandSender sender) {
-        sender.sendMessage("webhook url is: "+ConfigSettings.webhookUrl);
+        sender.sendMessage("webhook url is set to: "+TruncationToolbox.truncateLine(ConfigSettings.webhookUrl, 60, "*******/****..."));
         return getStatus(sender);
     }
 
     boolean setWebhook(CommandSender sender, String url) {
-//        if (Objects.equals(ConfigSettings.webhookUrl, url))
-//        {
-//            sender.sendMessage("is the same webhook url");
-//            return true;
-//        }
-
         // validate url
         WebhookMailer webhookMailer = new WebhookMailer(url);
         if (!webhookMailer.isUrlValid()) {
