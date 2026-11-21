@@ -33,7 +33,7 @@ public enum WebhookFormat {
         if (Objects.equals(url, "MISSING")) return MISSING_URL;
         if (url.startsWith("http://")) return IS_HTTP_URL;
         if (!url.startsWith("https://")) return NO_HTTPS_URL;
-        if (WEBHOOK.matcher(url).matches()) return INVALID_WEBHOOK_URL;
+        if (!WEBHOOK.matcher(url).matches()) return INVALID_WEBHOOK_URL;
 
         return FINE;
     }
