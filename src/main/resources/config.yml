@@ -15,28 +15,28 @@ message:
 
 content:
   # [INFO] max number of characters for content body of a message
-  # [WARN] discord limit is 2000 by message, and a margin is needed for formating
+  # [WARN] discord limit is 2000 per message, and a margin is needed for formatting
   body-char-limit: 1900
 
   # [INFO] max number of characters for one log line
   line-char-limit: 1900
 
-  # [INFO] if show logger name (when it is a plugin)
+  # [INFO] whether to show logger name (when it is a plugin)
   show-plugin-logger: true
 
-  # [INFO] change how is formated log on sending
+  # [INFO] change how log is formatted on sending
   # [USE] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT
   format: 'ANSIBLOCK'
 
   # [ERROR] options working only if format is ANSI-BLOCK
   ansi:
-    # [INFO] convert detected legacy color (using §) to ansi
+    # [INFO] convert detected legacy color (using §) to ANSI
     convert-legacy: true
 
-    # [INFO] do apply a yellow color to warnings logs
+    # [INFO] do apply a yellow color to warning logs
     color-warning: true
 
-    # [INFO] do apply a red color to errors logs
+    # [INFO] do apply a red color to error logs
     color-error: true
 
   stack-trace:
@@ -60,7 +60,7 @@ filter:
     #- 'INFO'
 
 queue:
-  # [INFO] how much logs can be stored in the queue
+  # [INFO] how many logs can be stored in the queue
   # [WARN] if the queue is full, log messages are ignored
   wait-capacity: 100
 
@@ -70,13 +70,13 @@ queue:
   # [INFO] will queue up messages even when disconnected
   remember-disconnected: true
 
-  # [INFO] group logs only if sent the same second
+  # [INFO] group logs only if sent in the same second
   group-by-second: true
 
-  # [INFO] how much try to send a request before skip
+  # [INFO] how many times to try sending a request before skipping
   request-try-amount: 5
 
-  # [INFO] various delay times to not reach discord rate limits
+  # [INFO] various delay times to not reach Discord rate limits
   # [ERROR] do not change unless you know what you are doing!
   wait-time:
     breath-start-ms: 100
@@ -87,7 +87,7 @@ queue:
     shutdown-worker-margin-ms: 15000
 
 debug:
-  # [INFO] will test by sending to console after enable
+  # [INFO] will test by sending to console after enabling
   # [WARN] this will produce errors/warnings in console
   test-warning: false
   test-error: false
