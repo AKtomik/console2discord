@@ -65,9 +65,14 @@ public class TheCommand implements CommandExecutor {
 
     boolean getStatus(CommandSender sender) {
         String maj = "console2discord communication state: ";
-        if (plugin.isCommunicating()) sender.sendMessage(maj + "§l§aenabled");
-        else if (manualStop) sender.sendMessage(maj + "§l§estopped");
-        else sender.sendMessage(maj + "§l§cfailed");
+        if (plugin.isCommunicating()) {
+            sender.sendMessage(maj + "§l§aenabled");
+        } else if (manualStop) {
+            sender.sendMessage(maj + "§l§estopped");
+        } else {
+            sender.sendMessage(maj + "§l§cfailed"
+                    + "\n" + plugin.mailer.getErrorMessage());
+        }
         return true;
     }
 
@@ -101,7 +106,8 @@ public class TheCommand implements CommandExecutor {
             sender.sendMessage("§acommunication started");
         }
         else {
-            sender.sendMessage("§ccommunication failed");
+            sender.sendMessage("§ccommunication failed"
+                    + "\n" + plugin.mailer.getErrorMessage());
         }
         return true;
     }
@@ -149,7 +155,8 @@ public class TheCommand implements CommandExecutor {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         } else {
-            sender.sendMessage("§ccommunication failed");
+            sender.sendMessage("§ccommunication failed"
+                    + "\n" + plugin.mailer.getErrorMessage());
             return true;
         }
 

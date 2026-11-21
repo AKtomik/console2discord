@@ -21,6 +21,7 @@ public class WebhookMailer {
 
     private final URI uri;
     private final WebhookFormat urlFormat;
+    private WebhookStatus lastStatus;
 
     public String getUrlString() {
         return uri.getRawPath();
@@ -34,6 +35,16 @@ public class WebhookMailer {
         return urlFormat.ok();
     }
 
+    public String getErrorMessage() {
+        if (urlFormat == null || urlFormat.ok())
+            if (lastStatus == null || lastStatus.ok())
+                return null;
+            else
+                return lastStatus.message();
+        else
+            return urlFormat.message();
+    }
+
     // requests
 
     private WebhookStatus sendRequest(HttpRequest request) {
@@ -42,8 +53,10 @@ public class WebhookMailer {
             HttpClient client = HttpClient.newHttpClient();
             // send
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            // success
-            return WebhookStatus.fromStatus(response.statusCode());
+            // status
+            WebhookStatus status = WebhookStatus.fromStatus(response.statusCode());
+            lastStatus = status;
+            return status;
         } catch (IOException e) {
             return WebhookStatus.OFFLINE;
         } catch (InterruptedException e) {
