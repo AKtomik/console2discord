@@ -4,7 +4,7 @@ import io.itch.aktomik.console2Discord.listen.LogListen;
 import io.itch.aktomik.console2Discord.send.SendLoop;
 import io.itch.aktomik.console2Discord.listen.LogQueue;
 import io.itch.aktomik.console2Discord.send.WebhookMailer;
-import io.itch.aktomik.console2Discord.send.WebhookUrlStatus;
+import io.itch.aktomik.console2Discord.send.WebhookStatus;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -53,11 +53,11 @@ public final class Console2Discord extends JavaPlugin {
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // start communication
-        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(ConfigSettings.webhookUrl);
-        if (urlStatus != WebhookUrlStatus.OK) {
-            getLogger().severe(urlStatus.message());
+        WebhookMailer setupMailer = new WebhookMailer(ConfigSettings.webhookUrl);
+        if (setupMailer.getStatus() != WebhookStatus.OK_FORMAT) {
+            getLogger().severe(setupMailer.getStatus().message());
             getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
-        } else if (!startCommunication(ConfigSettings.webhookUrl)) {
+        } else if (!startCommunication(setupMailer)) {
             getLogger().warning("communication failed, you can retry with [/c2d start]");
         }
 
@@ -99,9 +99,8 @@ public final class Console2Discord extends JavaPlugin {
 
     // - communication -
 
-    boolean startCommunication(String validWebhookUrl) {
+    boolean startCommunication(WebhookMailer newMailer) {
         // mail
-        WebhookMailer newMailer = new WebhookMailer(validWebhookUrl);
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
         int status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);

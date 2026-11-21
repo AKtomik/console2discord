@@ -1,7 +1,8 @@
 package io.itch.aktomik.console2Discord;
 
+import io.itch.aktomik.console2Discord.send.WebhookMailer;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
-import io.itch.aktomik.console2Discord.send.WebhookUrlStatus;
+import io.itch.aktomik.console2Discord.send.WebhookStatus;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -88,14 +89,14 @@ public class TheCommand implements CommandExecutor {
         manualStop = false;
 
         // validate
-        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(ConfigSettings.webhookUrl);
-        if (urlStatus != WebhookUrlStatus.OK) {
-            sender.sendMessage("§c" + urlStatus.message());
+        WebhookMailer webhookMailer = new WebhookMailer(ConfigSettings.webhookUrl);
+        if (webhookMailer.getStatus() != WebhookStatus.OK_FORMAT) {
+            sender.sendMessage("§c" + webhookMailer.getStatus().message());
             return true;
         }
 
         // start
-        if (plugin.startCommunication(ConfigSettings.webhookUrl)) {
+        if (plugin.startCommunication(webhookMailer)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         }
@@ -132,9 +133,9 @@ public class TheCommand implements CommandExecutor {
 //        }
 
         // validate
-        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(url);
-        if (urlStatus != WebhookUrlStatus.OK) {
-            sender.sendMessage("§c" + urlStatus.message());
+        WebhookMailer webhookMailer = new WebhookMailer(url);
+        if (webhookMailer.getStatus() != WebhookStatus.OK_FORMAT) {
+            sender.sendMessage("§c" + webhookMailer.getStatus().message());
             return true;
         }
 
@@ -142,7 +143,7 @@ public class TheCommand implements CommandExecutor {
         sender.sendMessage("changing webhook url...");
 
         // start
-        if (plugin.startCommunication(url)) {
+        if (plugin.startCommunication(webhookMailer)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         } else {

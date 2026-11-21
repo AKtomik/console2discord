@@ -11,43 +11,56 @@ import java.util.List;
 
 public class WebhookMailer {
 
+    public WebhookMailer(String urlString) {
+        lastStatus = WebhookStatus.validateUrlFormat(urlString);
+        uri = URI.create(urlString);
+    }
+
+    // members
+
     final private URI uri;
+    final private WebhookStatus lastStatus;
 
     public String getUrl() {
         return uri.getRawPath();
     }
 
-    public WebhookMailer(String urlString) {
-        uri = URI.create(urlString);
+    public WebhookStatus getStatus() {
+        return lastStatus;
     }
 
-    private int sendJson(String json) {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request;
+    // requests
 
+    private int sendRequest(HttpRequest request) {
         try {
-            // build request
-            request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-
-        } catch (IllegalArgumentException e) {
-            return -2;
-        }
-
-        try {
+            HttpClient client = HttpClient.newHttpClient();
             // send
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             // success
             return response.statusCode();
-
         } catch (IOException e) {
             return -1;
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private int sendJson(String json) {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        return sendRequest(request);
+    }
+
+    private int tryGet() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri)
+                .header("Content-Type", "application/json")
+                .GET()
+                .build();
+        return sendRequest(request);
     }
 
     public int sendMessage(String message) {
