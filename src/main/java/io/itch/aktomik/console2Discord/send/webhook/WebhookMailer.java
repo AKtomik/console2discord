@@ -18,8 +18,8 @@ public class WebhookMailer {
 
     // atrs
 
-    final private URI uri;
-    final private WebhookFormat urlFormat;
+    private final URI uri;
+    private final WebhookFormat urlFormat;
 
     public String getUrl() {
         return uri.getRawPath();
@@ -30,7 +30,7 @@ public class WebhookMailer {
     }
 
     public boolean isUrlOk() {
-        return urlFormat.OK();
+        return urlFormat.ok();
     }
 
     // requests
@@ -58,7 +58,7 @@ public class WebhookMailer {
         return sendRequest(request);
     }
 
-    private WebhookStatus tryGet() {
+    public WebhookStatus check() {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header("Content-Type", "application/json")

@@ -21,11 +21,8 @@ public enum WebhookFormat {
     public String message() {
         return message;
     }
-    public boolean OK() {
+    public boolean ok() {
         return ok;
-    }
-    public boolean KO() {
-        return !ok;
     }
 
     private static final Pattern WEBHOOK = Pattern.compile("^https://(?:(?:canary\\.|ptb\\.)?discord(?:app)?\\.com)/api/(?:v\\d+/)?webhooks/(\\d{15,25})/([\\w-]{20,100})/?(?:\\?.*)?$");

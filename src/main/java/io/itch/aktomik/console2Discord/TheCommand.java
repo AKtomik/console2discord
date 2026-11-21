@@ -1,6 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
 import io.itch.aktomik.console2Discord.send.webhook.WebhookMailer;
+import io.itch.aktomik.console2Discord.send.webhook.WebhookStatus;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
@@ -131,15 +132,23 @@ public class TheCommand implements CommandExecutor {
 //            return true;
 //        }
 
-        // validate
+        // validate url
         WebhookMailer webhookMailer = new WebhookMailer(url);
         if (!webhookMailer.isUrlOk()) {
             sender.sendMessage("§c" + webhookMailer.getUrlFormat().message());
             return true;
         }
 
-//        plugin.stopCommunication(false, false);
+        // validate request
+        WebhookStatus status = webhookMailer.check();
+        if (!status.ok()) {
+            sender.sendMessage("§c" + status.message());
+            return true;
+        }
+
+        // stop
         sender.sendMessage("changing webhook url...");
+        plugin.stopCommunication(false, true);
 
         // start
         if (plugin.startCommunication(webhookMailer)) {

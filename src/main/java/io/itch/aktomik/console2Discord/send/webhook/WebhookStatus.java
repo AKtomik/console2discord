@@ -20,11 +20,8 @@ public enum WebhookStatus {
     public String message() {
         return message;
     }
-    public boolean OK() {
+    public boolean ok() {
         return ok;
-    }
-    public boolean KO() {
-        return !ok;
     }
 
     static WebhookStatus fromStatus(int status) {
