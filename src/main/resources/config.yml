@@ -21,8 +21,8 @@ content:
   # [INFO] max number of characters for one log line
   line-char-limit: 1900
 
-  # [INFO] if show log origin (is most of the time a plugin name)
-  show-origin: true
+  # [INFO] if show logger name (when it is a plugin)
+  show-plugin-logger: true
 
   # [INFO] change how is formated log on sending
   # [USE] you can use: CODEBLOCK, ANSIBLOCK, INLINE, TEXT

@@ -33,8 +33,9 @@ public class LogListen extends AbstractAppender {
         // plugin
         String originStr = "";
         String name = event.getLoggerName();
-        // name.contains(".")) -> if class
-        if (name != null && !name.isBlank() && !msgStr.startsWith("[" + name + "]") && ConfigSettings.contentShowOrigin) {
+        // name.contains(".") -> will filter all classes messages
+        // real filtered prefixes for server (from paper log4j2.xml): net.minecraft.,Minecraft,com.mojang.,com.sk89q.,ru.tehkode.,Minecraft.AWE
+        if (name != null && !name.isBlank() && ConfigSettings.contentShowPluginLogger && !name.contains(".") && !msgStr.startsWith("[" + name + "]")) {
             originStr = "[" + name + "] ";
         }
 

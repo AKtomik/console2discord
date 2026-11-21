@@ -18,7 +18,7 @@ public final class ConfigSettings {
 
     public static int contentBodyCharLimit = 1900;
     public static int contentLineCharLimit = 1900;
-    public static boolean contentShowOrigin = true;
+    public static boolean contentShowPluginLogger = true;
     public static SendFormat contentFormat = SendFormat.INLINE;
 
     public static boolean contentAnsiConvertLegacy = true;
@@ -58,7 +58,7 @@ public final class ConfigSettings {
 
         contentBodyCharLimit = c.getInt("content.body-char-limit", contentBodyCharLimit);
         contentLineCharLimit = c.getInt("content.line-char-limit", contentLineCharLimit);
-        contentShowOrigin = c.getBoolean("content.show-origin", contentShowOrigin);
+        contentShowPluginLogger = c.getBoolean("content.show-origin", contentShowPluginLogger);
         contentFormat = SendFormat.fromString(c.getString("content.format", String.valueOf(contentFormat)));
         if (contentFormat == null) contentFormat = SendFormat.TEXT;
 
