@@ -1,4 +1,4 @@
-package io.itch.aktomik.console2Discord.send;
+package io.itch.aktomik.console2Discord.send.webhook;
 
 import java.util.Objects;
 import java.util.regex.Pattern;

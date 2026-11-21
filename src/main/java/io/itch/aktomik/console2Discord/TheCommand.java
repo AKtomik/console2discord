@@ -1,8 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
-import io.itch.aktomik.console2Discord.send.WebhookMailer;
+import io.itch.aktomik.console2Discord.send.webhook.WebhookMailer;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
-import io.itch.aktomik.console2Discord.send.WebhookStatus;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

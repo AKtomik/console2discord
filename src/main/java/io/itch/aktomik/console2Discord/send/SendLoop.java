@@ -4,6 +4,8 @@ import io.itch.aktomik.console2Discord.ConfigSettings;
 import io.itch.aktomik.console2Discord.listen.LogUnit;
 import io.itch.aktomik.console2Discord.SessionStats;
 import io.itch.aktomik.console2Discord.listen.LogQueue;
+import io.itch.aktomik.console2Discord.send.webhook.WebhookMailer;
+import io.itch.aktomik.console2Discord.send.webhook.WebhookStatus;
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
 
 import java.util.ArrayList;

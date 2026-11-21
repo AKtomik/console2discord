@@ -1,7 +1,4 @@
-package io.itch.aktomik.console2Discord.send;
-
-import java.util.Objects;
-import java.util.regex.Pattern;
+package io.itch.aktomik.console2Discord.send.webhook;
 
 public enum WebhookStatus {
     SUCCESS(true, "webhook request sent"),

@@ -1,4 +1,4 @@
-package io.itch.aktomik.console2Discord.send;
+package io.itch.aktomik.console2Discord.send.webhook;
 
 import io.itch.aktomik.console2Discord.utils.JsonBuilder;
 
