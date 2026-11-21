@@ -4,6 +4,7 @@ import io.itch.aktomik.console2Discord.listen.LogListen;
 import io.itch.aktomik.console2Discord.send.SendLoop;
 import io.itch.aktomik.console2Discord.utils.LogQueue;
 import io.itch.aktomik.console2Discord.utils.WebhookMailer;
+import io.itch.aktomik.console2Discord.utils.WebhookUrlStatus;
 import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,8 +53,12 @@ public final class Console2Discord extends JavaPlugin {
         if (shutdownThread != null) Runtime.getRuntime().removeShutdownHook(shutdownThread);
 
         // start communication
-        if (!startCommunication(ConfigSettings.webhookUrl)) {
-            getLogger().warning("communication failed, you cand reconfigure and retry with [/c2d reload]");
+        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(ConfigSettings.webhookUrl);
+        if (urlStatus != WebhookUrlStatus.OK) {
+            getLogger().severe(urlStatus.message());
+            getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
+        } else if (!startCommunication(ConfigSettings.webhookUrl)) {
+            getLogger().warning("communication failed, you can retry with [/c2d start]");
         }
 
         // shutdown listen
@@ -94,21 +99,9 @@ public final class Console2Discord extends JavaPlugin {
 
     // - communication -
 
-    boolean startCommunication(String webhookUrl) {
-        // webhook check
-        if (Objects.equals(webhookUrl, "YOUR_URL_HERE")) {
-            getLogger().severe("Please set your webhook URL in plugins/console2discord/config.yml");
-            getLogger().info("Communication failed");
-            return false;
-        }
-        if (Objects.equals(webhookUrl, "MISSING")) {
-            getLogger().severe("Webhook URL is not loaded from plugins/console2discord/config.yml");
-            getLogger().info("Communication failed");
-            return false;
-        }
-
+    boolean startCommunication(String validWebhookUrl) {
         // mail
-        WebhookMailer newMailer = new WebhookMailer(webhookUrl);
+        WebhookMailer newMailer = new WebhookMailer(validWebhookUrl);
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
         int status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);

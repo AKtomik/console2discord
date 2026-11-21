@@ -1,6 +1,7 @@
 package io.itch.aktomik.console2Discord;
 
 import io.itch.aktomik.console2Discord.utils.TruncationToolbox;
+import io.itch.aktomik.console2Discord.utils.WebhookUrlStatus;
 import io.itch.aktomik.console2Discord.utils.YamlToolbox;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -87,6 +88,14 @@ public class TheCommand implements CommandExecutor {
 
         manualStop = false;
 
+        // validate
+        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(ConfigSettings.webhookUrl);
+        if (urlStatus != WebhookUrlStatus.OK) {
+            sender.sendMessage("§c" + urlStatus.message());
+            return true;
+        }
+
+        // start
         if (plugin.startCommunication(ConfigSettings.webhookUrl)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
@@ -117,15 +126,23 @@ public class TheCommand implements CommandExecutor {
     }
 
     boolean setWebhook(CommandSender sender, String url) {
-        if (Objects.equals(ConfigSettings.webhookUrl, url))
-        {
-            sender.sendMessage("is the same webhook url");
+//        if (Objects.equals(ConfigSettings.webhookUrl, url))
+//        {
+//            sender.sendMessage("is the same webhook url");
+//            return true;
+//        }
+
+        // validate
+        WebhookUrlStatus urlStatus = WebhookUrlStatus.validate(url);
+        if (urlStatus != WebhookUrlStatus.OK) {
+            sender.sendMessage("§c" + urlStatus.message());
             return true;
         }
 
-        plugin.stopCommunication(false, false);
+//        plugin.stopCommunication(false, false);
         sender.sendMessage("changing webhook url...");
 
+        // start
         if (plugin.startCommunication(url)) {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
