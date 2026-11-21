@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public enum WebhookFormat {
-    FINE(false, "webhook URL is fine"),
+    FINE(true, "webhook URL is fine"),
     NULL_URL(false, "webhook URL is null"),
     YOUR_URL_HERE(false, "set your webhook URL in plugins/console2discord/config.yml when server stopped or using [/c2d webhook <url>] in game"),
     MISSING_URL(false, "webhook URL field is missing from config"),
