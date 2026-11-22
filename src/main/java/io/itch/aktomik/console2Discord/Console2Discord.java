@@ -11,18 +11,22 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.awt.*;
 import java.io.File;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 public final class Console2Discord extends JavaPlugin {
 
-    WebhookMailer mailer = null;
-    LogListen appender = null;
-    SendLoop loop = null;
     Thread shutdownThread = null;
-
     volatile LogQueue queue;
+    LogListen appender = null;
+    WebhookMailer mailer = null;
+    SendLoop loop = null;
+
+    private static float hue = ThreadLocalRandom.current().nextFloat();
+    private static int sessionColor = 10437357;
 
     org.apache.logging.log4j.core.Logger rootCoreLogger = (org.apache.logging.log4j.core.Logger) LogManager.getRootLogger();
 
@@ -106,9 +110,10 @@ public final class Console2Discord extends JavaPlugin {
         mailer = newMailer;
 
         // mail
+        sessionColor = nextVividColor();
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
-        WebhookStatus status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, 10437357, startDetails);
+        WebhookStatus status = newMailer.sendEmbed("Console2Discord", ConfigSettings.messageWelcomeText, sessionColor, startDetails);
         if (status.ok()) {
             getLogger().info("Hello message sent");
         } else {
@@ -143,7 +148,7 @@ public final class Console2Discord extends JavaPlugin {
                     + " - " + SessionStats.sentFailureCount + " failed"
                     + " - " + SessionStats.sentIgnoredCount + " ignored";
             SessionStats.reset();
-            mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
+            mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, sessionColor, statLine);
             mailer = null;
         }
 
@@ -160,7 +165,7 @@ public final class Console2Discord extends JavaPlugin {
         return mailer.getErrorMessage();
     }
 
-    // - misc -
+    // - config -
 
     private void applyConfig(FileConfiguration config) {
         ConfigSettings.load(config);
@@ -189,6 +194,8 @@ public final class Console2Discord extends JavaPlugin {
         getLogger().info("Config read");
     }
 
+    // - misc -
+
     public void debugMessages() {
         // debug config version
         String configVersion = ConfigSettings.debugGeneratedVersion;
@@ -209,6 +216,11 @@ public final class Console2Discord extends JavaPlugin {
                 getLogger().log(Level.SEVERE, "Test Exception Caught", e);
             }
         }
+    }
+
+    static synchronized int nextVividColor() {
+        hue = (hue + 0.618034f) % 1f;
+        return Color.HSBtoRGB(hue, 0.85f, 1.0f) & 0xFFFFFF;
     }
 
     // - disable -
