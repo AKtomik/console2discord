@@ -95,4 +95,4 @@ debug:
 
   # [WARN] this used for config update messages
   # [ERROR] do not edit manually unless you know what you are doing!
-  generated-version: ${version}
+  generated-version: '${project.version}'

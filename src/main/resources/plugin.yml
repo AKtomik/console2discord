@@ -1,5 +1,5 @@
 name: console2discord
-version: '${version}'
+version: '${project.version}'
 
 main: io.itch.aktomik.console2Discord.Console2Discord
 api-version: '1.13'
@@ -13,7 +13,7 @@ website: 'https://github.com/AKtomik/console2discord'
 commands:
   console2discord:
     description: Manage Console2Discord plugin
-    usage: /<command> [help|webhook|status|reload|stop|start|pause]
+    usage: /<command> [help|webhook|status|reload|stop|start]
     aliases: [c2d]
     permission: console2discord.command
 
