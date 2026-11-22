@@ -3,6 +3,7 @@ version: '${version}'
 
 main: io.itch.aktomik.console2Discord.Console2Discord
 api-version: '1.13'
+folia-supported: true
 load: STARTUP
 
 description: 'Forward your console logs to Discord using webhooks.'
