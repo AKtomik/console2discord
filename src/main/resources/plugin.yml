@@ -5,6 +5,10 @@ main: io.itch.aktomik.console2Discord.Console2Discord
 api-version: '1.13'
 load: STARTUP
 
+description: 'Forward your console logs to Discord using webhooks.'
+author: 'AKtomik'
+website: 'https://github.com/AKtomik/console2discord'
+
 commands:
   console2discord:
     description: Manage Console2Discord plugin
