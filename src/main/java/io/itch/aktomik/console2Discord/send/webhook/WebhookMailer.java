@@ -23,10 +23,6 @@ public class WebhookMailer {
     private final WebhookFormat urlFormat;
     private WebhookStatus lastStatus;
 
-    public String getUrlString() {
-        return uri.getRawPath();
-    }
-
     public WebhookFormat getUrlValidation() {
         return urlFormat;
     }

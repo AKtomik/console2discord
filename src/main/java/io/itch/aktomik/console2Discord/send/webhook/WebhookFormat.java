@@ -26,7 +26,7 @@ public enum WebhookFormat {
         return ok;
     }
 
-    private static final Pattern WEBHOOK = Pattern.compile("^https://(?:(?:canary\\.|ptb\\.)?discord(?:app)?\\.com)/api/(?:v\\d+/)?webhooks/(\\d{15,25})/([\\w-]{20,100})/?(?:\\?.*)?$");
+    private static final Pattern WEBHOOK = Pattern.compile("^https://(?:canary\\.|ptb\\.)?discord(?:app)?\\.com/api/(?:v\\d+/)?webhooks/(\\d{15,25})/([\\w-]{20,100})/?(?:\\?.*)?$");
     static WebhookFormat validate(String url) {
 
         if (url == null) return NULL_URL;
