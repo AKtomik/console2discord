@@ -55,10 +55,11 @@ public final class Console2Discord extends JavaPlugin {
         // start communication
         WebhookMailer setupMailer = new WebhookMailer(ConfigSettings.webhookUrl);
         if (!setupMailer.isUrlValid()) {
+            getLogger().severe("invalid webook URL:");
             getLogger().severe(setupMailer.getUrlValidation().message());
-            getLogger().warning("invalid webook URL, you can retry with [/c2d webhook <url>]");
+            getLogger().warning("you can retry with [/c2d webhook <url>]");
         } else if (!startCommunication(setupMailer)) {
-            getLogger().warning("communication failed, you can retry with [/c2d reload]");
+            getLogger().warning("you can retry with [/c2d reload]");
         }
 
         // shutdown listen
@@ -111,6 +112,7 @@ public final class Console2Discord extends JavaPlugin {
         if (status.ok()) {
             getLogger().info("Hello message sent");
         } else {
+            getLogger().severe("Communication failed:");
             getLogger().severe(status.message());
             return false;
         }
@@ -143,7 +145,7 @@ public final class Console2Discord extends JavaPlugin {
             SessionStats.reset();
             mailer.sendEmbed("Console2Discord", ConfigSettings.messageGoodbyeText, 10437357, statLine);
             mailer = null;
-        };
+        }
 
         getLogger().info("Communication stopped");
     }

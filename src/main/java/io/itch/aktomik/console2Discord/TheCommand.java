@@ -81,7 +81,7 @@ public class TheCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(maj + "§l§estopped");
         } else {
             sender.sendMessage(maj + "§l§cfailed"
-                    + "\n§c" + plugin.getMailerError());
+                    + "\n§c(" + plugin.getMailerError() + ")");
         }
         return true;
     }
@@ -116,7 +116,7 @@ public class TheCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage("§acommunication started");
         }
         else {
-            sender.sendMessage("§ccommunication failed"
+            sender.sendMessage("§ccommunication failed:"
                     + "\n§c" + plugin.getMailerError());
         }
         return true;
@@ -165,7 +165,7 @@ public class TheCommand implements CommandExecutor, TabCompleter {
             if (!plugin.isListening()) plugin.startListen();
             sender.sendMessage("§acommunication started");
         } else {
-            sender.sendMessage("§ccommunication failed"
+            sender.sendMessage("§ccommunication failed:"
                     + "\n§c" + plugin.getMailerError());
             return true;
         }
