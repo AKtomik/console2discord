@@ -2,15 +2,9 @@
 
 **Monitor your Minecraft server console logs live from a Discord channel.** Forwarded logs are directly read from the console logger (log4j) and sent to Discord using webhooks. Logs are colored using ANSI!
 
-
-<img width="1004" height="391" alt="image" src="https://github.com/user-attachments/assets/b2eefcc6-053c-4f76-8715-726fd4623599" />
-
-
 Console2Discord is also a great way to **keep a history of your logs** in a Discord channel. Any message sent to Discord is saved with no date limit, and you can search back to a specific date using keywords with Discord search.
 
-
-<img width="545" height="558" alt="image" src="https://github.com/user-attachments/assets/f6441e7f-5502-426b-b46a-cb114c30928a" />
-
+<img width="1530" height="536" alt="Minecraft colored console logs within Discord" src="https://github.com/user-attachments/assets/dfb0405f-d7df-4cd9-b81b-d74ad12a9be5" />
 
 This is very [easy to set up](#setup), no need to create a bot or anything similar! Compatible with Spigot / Bukkit / Paper / Folia from **1.8 to 26.3+**. See the [compatibility table](#compatibility-table) for more details.
 
@@ -23,7 +17,7 @@ In Discord:
 2. Create a webhook in this channel `Channel Settings > Integrations > New Webhook`
 3. Copy the webhook URL as you'll need it just after `Copy Webhook URL`
 
-<img width="1380" height="816" alt="create discord webhook" src="https://github.com/user-attachments/assets/32eb75a3-9ca7-426c-aaa1-147b772d4aa4" />
+<img width="1380" height="816" alt="Discord webhook creation tuto gif" src="https://github.com/user-attachments/assets/32eb75a3-9ca7-426c-aaa1-147b772d4aa4" />
 
 In your Minecraft server:
 
@@ -68,7 +62,7 @@ Some cool settings examples:
 
 You'll have a bunch of other settings to play with. All settings have a proper description commented directly in the file. Default values are great for most servers.
 
-<img width="669" height="428" alt="image" src="https://github.com/user-attachments/assets/28c72b58-d5a0-47b5-989d-0e198eb17771" />
+<img width="669" height="428" alt="config.yml content preview" src="https://github.com/user-attachments/assets/28c72b58-d5a0-47b5-989d-0e198eb17771" />
 
 ## Commands
 
