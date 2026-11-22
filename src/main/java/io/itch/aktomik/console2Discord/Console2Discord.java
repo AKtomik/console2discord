@@ -100,6 +100,10 @@ public final class Console2Discord extends JavaPlugin {
     // - communication -
 
     boolean startCommunication(WebhookMailer newMailer) {
+        // assign
+        // ! even if communication fails mailer is not null so that getErrorMessage is available
+        mailer = newMailer;
+
         // mail
         String mcVersion = Bukkit.getBukkitVersion().split("-")[0];
         String startDetails = Bukkit.getName() + " " + mcVersion + " - " + getDescription().getName() + " " + getDescription().getVersion();
@@ -108,12 +112,8 @@ public final class Console2Discord extends JavaPlugin {
             getLogger().info("Hello message sent");
         } else {
             getLogger().severe(status.message());
-            getLogger().info("Communication failed");
             return false;
         }
-
-        // valid
-        mailer = newMailer;
 
         // loop
         loop = new SendLoop(queue, mailer);
@@ -149,7 +149,13 @@ public final class Console2Discord extends JavaPlugin {
     }
 
     boolean isCommunicating() {
-        return mailer != null;
+        // mailer can be not null without communicating
+        return loop != null;
+    }
+
+    String getMailerError() {
+        if (mailer == null) return "No mailer";
+        return mailer.getErrorMessage();
     }
 
     // - misc -
